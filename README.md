@@ -16,4 +16,5 @@ Das Projekt steht am Anfang. Es gibt noch keinen lauffähigen Code.
 
 Die Anforderungen stehen als StrictDoc-Dokumente in [`req/sdoc`](req/sdoc).
 [`req/README.md`](req/README.md) beschreibt den Export und das Ändern im
-Browser.
+Browser. Der aktuelle Stand von `main` ist unter
+<https://the78mole.github.io/DiggerRouter/> veröffentlicht.

@@ -12,6 +12,9 @@ on:
       - "req/**"
       - "strictdoc_config.py"
       - ".github/workflows/requirements.yml"
+  release:
+    types: [published]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -19,6 +22,7 @@ permissions:
 jobs:
   export:
     name: StrictDoc-Export
+    if: github.event_name != 'release'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -33,3 +37,52 @@ jobs:
         with:
           name: anforderungen-html
           path: output/html
+      - name: Export für GitHub Pages bereitstellen
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: output/html
+
+  pages:
+    name: GitHub Pages
+    needs: export
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
+
+  release:
+    name: Single-File-HTML im Release
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - name: StrictDoc installieren
+        run: pip install -r req/requirements.txt
+      - name: Single-File-HTML exportieren
+        # Mermaid, MathJax und PlantUML lädt die Datei vom CDN.
+        run: >
+          strictdoc export . --output-dir output
+          --formats html-single --html-single-libraries cdn
+      - name: Datei an das Release hängen
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          cp output/html-single/DiggerRouter.html "DiggerRouter-Anforderungen-${TAG}.html"
+          gh release upload "${TAG}" "DiggerRouter-Anforderungen-${TAG}.html" --clobber

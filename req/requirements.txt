@@ -1,2 +1,5 @@
-# StrictDoc aus dem Fork mit dem Feature STATIC_EDITING.
-strictdoc @ git+https://github.com/the78mole/strictdoc@feature/static-editing
+# StrictDoc aus dem Fork the78mole/strictdoc.
+# Der Commit liegt auf dem Branch claude/project-thread-z76aub und enthält
+# STATIC_EDITING und den Single-File-Export (html-single).
+# Auf feature/static-editing umstellen, sobald html-single dort gemergt ist.
+strictdoc @ git+https://github.com/the78mole/strictdoc@1d22da6cb3abc4197790159cb12b1909ade199bc

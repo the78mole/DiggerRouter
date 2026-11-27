@@ -21,9 +21,9 @@ Das Feld `STATUS` zeigt den Stand einer Anforderung: `Vorschlag`, `Abgestimmt`,
 
 ## HTML erzeugen
 
-StrictDoc kommt aus dem Fork `the78mole/strictdoc`, Branch
-`feature/static-editing`. Die Befehle laufen im Wurzelverzeichnis des Repos.
-Dort liegt die Konfiguration `strictdoc_config.py`.
+StrictDoc kommt aus dem Fork `the78mole/strictdoc`. `req/requirements.txt`
+legt den Commit fest. Die Befehle laufen im Wurzelverzeichnis des Repos. Dort
+liegt die Konfiguration `strictdoc_config.py`.
 
 ```sh
 pip install -r req/requirements.txt
@@ -31,6 +31,25 @@ strictdoc export . --output-dir output
 ```
 
 Der Export liegt danach in `output/html/index.html`.
+
+## Veröffentlichung
+
+Der Workflow `Anforderungen` veröffentlicht den Export an zwei Stellen:
+
+- **GitHub Pages:** Jeder Push auf `main`, der die Anforderungen ändert,
+  veröffentlicht den HTML-Export unter
+  <https://the78mole.github.io/DiggerRouter/>.
+- **Release:** Jedes veröffentlichte Release erhält die Datei
+  `DiggerRouter-Anforderungen-<tag>.html`. Sie enthält den gesamten Export in
+  einer Datei. Mermaid, MathJax und PlantUML lädt sie vom CDN.
+
+Die Datei für ein Release entsteht lokal so:
+
+```sh
+strictdoc export . --output-dir output --formats html-single --html-single-libraries cdn
+```
+
+Sie liegt danach in `output/html-single/DiggerRouter.html`.
 
 ## Anforderungen im Browser ändern
 
