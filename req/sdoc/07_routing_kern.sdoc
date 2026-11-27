@@ -1,0 +1,947 @@
+[DOCUMENT]
+MID: 8fc7aaa0d2d54fefa6f2d9f9229be9a3
+TITLE: DiggerRouter: Routing-Kern
+UID: DR-SYS-RK
+VERSION: @GIT_VERSION (Git-Branch: @GIT_BRANCH)
+DATE: @GIT_COMMIT_DATETIME
+PREFIX: RK-
+OPTIONS:
+  ENABLE_MID: True
+  VIEW_STYLE: Table
+  NODE_IN_TOC: True
+
+[GRAMMAR]
+IMPORT_FROM_FILE: @diggerrouter
+
+[[SECTION]]
+MID: 1fefa7410c5b414d84007af671e32661
+TITLE: Einleitung
+
+[TEXT]
+MID: 9bb61c2ed865423da689ed2d27df2aa4
+STATEMENT: >>>
+Dieses Dokument beschreibt das Verhalten des Routing-Kerns im Detail. Die
+Anforderungen sind aus dem Verhalten von Freerouting abgeleitet
+(https://github.com/freerouting/freerouting, Commit ``779e271`` vom 25.11.2026).
+
+Das Feld HERKUNFT nennt die Stelle in Freerouting, an der das Verhalten zu
+finden ist. Pfade beziehen sich auf ``src/main/java/app/freerouting``.
+Einstellungen sind mit ihrem Namen aus ``docs/settings.md`` genannt.
+
+Die Anforderungen beschreiben Verhalten. Sie übernehmen keinen Quellcode.
+Freerouting steht unter der GPLv3.
+
+Wo Freerouting eine Funktion nur vorbereitet hat, steht das in HERKUNFT. Das
+betrifft Differenzialpaare, den Längenabgleich und Entkopplungskondensatoren.
+<<<
+
+[[/SECTION]]
+
+[[SECTION]]
+MID: 3a6fef95113a46b89765a75846c9a5c3
+TITLE: Wegsuche und Geometrie
+
+[REQUIREMENT]
+MID: 117efcdc95fa4ef5b590d0fe1ab5af95
+UID: RK-001
+STATUS: Vorschlag
+TITLE: Routing ohne Raster
+STATEMENT: >>>
+Der Routing-Kern muss Leiterbahnen ohne festes Raster verlegen. Die Lage einer Leiterbahn dürfen nur die Design Rules und die Koordinatenauflösung von KiCad begrenzen.
+<<<
+RATIONALE: >>>
+Ein Raster verschenkt Platz zwischen eng stehenden Pads und passt nicht zu Bauteilen mit unterschiedlichem Pinabstand.
+<<<
+HERKUNFT: >>>
+Freerouting: ``autoroute/expansion`` (Freiräume und Türen statt Rasterzellen), ``autoroute/maze/MazeSearchEngine.java``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-015
+
+[REQUIREMENT]
+MID: 1558fd4ed28f4df68c44d1b4f26bd830
+UID: RK-002
+STATUS: Vorschlag
+TITLE: Winkel der Leiterbahnen
+STATEMENT: >>>
+Der Nutzer muss wählen können, ob der Routing-Kern Leiterbahnen nur in 45°-Schritten, nur in 90°-Schritten oder in beliebigen Winkeln verlegt. Der Routing-Kern muss die Wahl einhalten.
+<<<
+HERKUNFT: >>>
+Freerouting: ``board/model/structure/AngleRestriction.java``, ``autoroute/path/FoundConnectionLocator45Degree.java``, ``FoundConnectionLocatorAnyAngle.java``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-016
+
+[REQUIREMENT]
+MID: a05f021834f242ea87693fd7befad53f
+UID: RK-003
+STATUS: Vorschlag
+TITLE: Wegwahl nach Kosten
+STATEMENT: >>>
+Der Routing-Kern muss unter den regelkonformen Wegen den mit den geringsten Kosten wählen. Die Kosten setzen sich zusammen aus der Länge, der Zahl der Vias, der Zahl der Knicke und der Abweichung von der Vorzugsrichtung der Lage.
+<<<
+HERKUNFT: >>>
+Freerouting: ``settings/RoutingCostSettings.java``, Einstellungen ``via_costs``, ``default_bend_cost``, ``default_preferred_direction_trace_cost``, ``default_undesired_direction_trace_cost``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-016
+- TYPE: Parent
+  VALUE: UR-012
+
+[REQUIREMENT]
+MID: be7e322e95954719a4674cb0bbc3e865
+UID: RK-004
+STATUS: Vorschlag
+TITLE: Anschluss an beliebiges Kupfer des Netzes
+STATEMENT: >>>
+Der Routing-Kern muss eine neue Verbindung an jedem Kupfer desselben Netzes enden lassen können: an einem Pad, einem Via, einer vorhandenen Leiterbahn oder einer Kupferfläche.
+<<<
+RATIONALE: >>>
+Ein Abzweig von einer vorhandenen Leiterbahn ist oft kürzer als ein Weg bis zum nächsten Pad.
+<<<
+HERKUNFT: >>>
+Freerouting: ``autoroute/expansion/TargetItemExpansionDoor.java``, ``autoroute/maze/DestinationDistance.java``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-015
+- TYPE: Parent
+  VALUE: UR-016
+
+[REQUIREMENT]
+MID: 8568f28f1ade4d3eac75a7e161ceaa0e
+UID: RK-005
+STATUS: Vorschlag
+TITLE: Keine Verletzung durch Rundung
+STATEMENT: >>>
+Der Routing-Kern muss so rechnen, dass das Ergebnis auch nach der Rundung auf die Koordinaten von KiCad alle Abstände einhält.
+<<<
+HERKUNFT: >>>
+Freerouting: ``geometry/planar`` (exakte Ganzzahl- und Bruchrechnung), Einstellungen ``clearance_tolerance_um``, ``drc_epsilon_um``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-009
+
+[[/SECTION]]
+
+[[SECTION]]
+MID: 7ca403beefab4932aea377352a1d264a
+TITLE: Pads und Pins
+
+[REQUIREMENT]
+MID: 319cbdda7b41433a959b92837cdd23c3
+UID: RK-010
+STATUS: Vorschlag
+TITLE: Austrittsrichtung an länglichen Pads
+STATEMENT: >>>
+Der Routing-Kern muss eine Leiterbahn aus einem länglichen rechteckigen Pad über eine der schmalen Seiten herausführen.
+<<<
+RATIONALE: >>>
+Ein seitlicher Austritt verengt den Abstand zum Nachbarpad und erschwert das Löten.
+<<<
+HERKUNFT: >>>
+Freerouting: ``board/model/items/Pin.java``, ``getTraceExitRestrictions``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-016
+
+[REQUIREMENT]
+MID: 3d93660727c446abbe1c61827e31b5f8
+UID: RK-011
+STATUS: Vorschlag
+TITLE: Verjüngung am Pad
+STATEMENT: >>>
+Ist die Leiterbahn breiter als das Pad, muss der Routing-Kern sie am Pad auf die Padbreite verjüngen. Die Verjüngung darf die kleinste erlaubte Leiterbahnbreite nicht unterschreiten.
+<<<
+HERKUNFT: >>>
+Freerouting: ``Pin.getTraceNeckdownHalfwidth``, Einstellungen ``automatic_neckdown``, ``neck_width_um``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-009
+- TYPE: Parent
+  VALUE: UR-015
+
+[REQUIREMENT]
+MID: 5b9c99cb3fb2458e90fed9703c75f320
+UID: RK-012
+STATUS: Vorschlag
+TITLE: Direkte Verbindung vor Via
+STATEMENT: >>>
+Der Routing-Kern muss Pads, die auf derselben Lage liegen, zuerst ohne Via zu verbinden versuchen.
+<<<
+HERKUNFT: >>>
+Freerouting: ``autoroute/pipeline/DirectPinRouting.java``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-016
+
+[REQUIREMENT]
+MID: 1ce18061b43e4d258a6ae161e91906bd
+UID: RK-013
+STATUS: Vorschlag
+TITLE: Fanout von SMD-Pads
+STATEMENT: >>>
+Kann der Routing-Kern ein SMD-Pad auf seiner Lage nicht anschließen, muss er es über eine kurze Stichleitung mit einem Via auf eine andere Lage führen. Die kleinste und die größte Länge der Stichleitung müssen einstellbar sein.
+<<<
+HERKUNFT: >>>
+Freerouting: ``autoroute/pipeline/BatchFanout.java``, Einstellungen ``fanout.min_escape_length_mm`` (2,5 mm), ``fanout.max_escape_length_mm`` (4,5 mm).
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-015
+
+[REQUIREMENT]
+MID: d643f81f090849fe8361eb2390ef43a8
+UID: RK-014
+STATUS: Vorschlag
+TITLE: Entflechtung von BGA-Bauteilen
+STATEMENT: >>>
+Der Routing-Kern muss Bauteile mit Pads im Flächenraster erkennen und ihre Pads ringweise von außen nach innen herausführen.
+<<<
+HERKUNFT: >>>
+Freerouting: ``autoroute/fanout/BgaFootprintDetector.java``, ``BgaEscapeSolver.java``, ``autoroute/pipeline/BallEscapeOrder.java``, Einstellungen ``fanout.bga_escape_enabled``, ``fanout.bga_escape_min_pins`` (9).
+<<<
+COMMENT: >>>
+[Claude] Freerouting behandelt Platinen mit genau zwei Signallagen gesondert (``TwoLayerBga.java``): Dort führt es die Pads reihenweise auf der Oberseite heraus, weil jedes Via beide Lagen belegt.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-015
+
+[REQUIREMENT]
+MID: 45886b106c9d4be7a54ac51b0eb06240
+UID: RK-015
+STATUS: Vorschlag
+TITLE: Gerader Austritt bei engem Pinabstand
+STATEMENT: >>>
+Lässt der Abstand zu den Nachbarpads an einem Pad nur einen einzigen regelkonformen Austritt zu, muss der Routing-Kern diesen Austritt vor allen anderen Leiterbahnen verlegen.
+<<<
+RATIONALE: >>>
+Verlegt der Routing-Kern zuerst eine andere Leiterbahn durch diesen Austritt, ist das Pad nicht mehr erreichbar.
+<<<
+HERKUNFT: >>>
+Freerouting: ``autoroute/pipeline/ExitStubs.java``, Einstellung ``autorouter.exit_stubs``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-015
+
+[REQUIREMENT]
+MID: 030f8d6b5682471ca551f47a987472a4
+UID: RK-016
+STATUS: Vorschlag
+TITLE: Via im Pad
+STATEMENT: >>>
+Der Nutzer muss einstellen können, ob der Routing-Kern ein Via in ein SMD-Pad des eigenen Netzes setzen darf. Die Voreinstellung muss das verbieten. In großflächigen thermischen Pads muss ein Via immer erlaubt sein.
+<<<
+RATIONALE: >>>
+Ein Via im Pad zieht beim Löten Lot ab, wenn es nicht gefüllt ist.
+<<<
+HERKUNFT: >>>
+Freerouting: ``AutorouteControl.viaInPad``, ``viaTouchingPad``, ``Pin.viaMayAttach``, ``rules/ViaInfo.java`` (``attachSmdAllowed``).
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-009
+
+[REQUIREMENT]
+MID: e52281e234364fd5a8916c50b3ba841c
+UID: RK-017
+STATUS: Vorschlag
+TITLE: Durchsteck-Pads als Lagenwechsel
+STATEMENT: >>>
+Der Routing-Kern muss ein durchkontaktiertes Pad auf jeder Kupferlage anschließen können und es als Lagenwechsel des Netzes nutzen.
+<<<
+HERKUNFT: >>>
+Freerouting: ``Pin.firstLayer``, ``Pin.lastLayer``, ``Pin.drillAllowed``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-016
+
+[REQUIREMENT]
+MID: 9a296ab8279a4466955d54c549e2f5da
+UID: RK-018
+STATUS: Vorschlag
+TITLE: Net-Ties
+STATEMENT: >>>
+Der Routing-Kern muss an einem Net-Tie-Bauteil zulassen, dass sich die Leiterbahnen der verbundenen Netze an dessen Pads berühren. Er darf das nicht als Kurzschluss werten.
+<<<
+HERKUNFT: >>>
+Freerouting: ``board/model/items/Item.java`` (Net-Tie-Cluster), ``Pin.getNetTieClusterId``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-009
+- TYPE: Parent
+  VALUE: UR-017
+
+[REQUIREMENT]
+MID: 0532b0a882fa4b418e6ffe7d9be0c750
+UID: RK-019
+STATUS: Vorschlag
+TITLE: Pads am Platinenrand
+STATEMENT: >>>
+Der Routing-Kern muss Pads anschließen können, die über den Platinenumriss hinausragen, zum Beispiel Randstecker und halbe Durchkontaktierungen. Für fremde Netze muss er sie als Hindernis werten.
+<<<
+HERKUNFT: >>>
+Freerouting: ``Item.java`` (Behandlung von Pads außerhalb des Umrisses).
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-015
+
+[[/SECTION]]
+
+[[SECTION]]
+MID: e54986b477394746b89ae05cc6861613
+TITLE: Vias
+
+[REQUIREMENT]
+MID: 2e5abef711134bb0a45169f1eed77e94
+UID: RK-020
+STATUS: Vorschlag
+TITLE: Via-Typen der Netzklasse
+STATEMENT: >>>
+Der Routing-Kern darf für ein Netz nur die Via-Typen verwenden, die dessen Netzklasse erlaubt. Sind mehrere erlaubt, muss er sie in der vorgegebenen Reihenfolge bevorzugen.
+<<<
+HERKUNFT: >>>
+Freerouting: ``rules/ViaRule.java``, ``NetClass.getViaRule``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-009
+
+[REQUIREMENT]
+MID: 9671dbd3dff54485b0cec20938e1e50d
+UID: RK-021
+STATUS: Vorschlag
+TITLE: Blind Vias, Buried Vias und Microvias
+STATEMENT: >>>
+Der Routing-Kern darf Blind Vias, Buried Vias und Microvias nur setzen, wenn die Platine sie erlaubt. Er darf ein solches Via nur zwischen den Lagen einsetzen, die sein Typ verbindet.
+<<<
+HERKUNFT: >>>
+Freerouting: ``AutorouteControl.viaLowerBound``, ``viaUpperBound``, ``ViaMask``, Einstellung ``allowed_via_types``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-009
+
+[REQUIREMENT]
+MID: 2c618f7ff9a64859994abc55016994ca
+UID: RK-022
+STATUS: Vorschlag
+TITLE: Kosten eines Vias
+STATEMENT: >>>
+Der Nutzer muss einstellen können, wie teuer der Routing-Kern ein Via gegenüber Leiterbahnlänge wertet.
+<<<
+HERKUNFT: >>>
+Freerouting: Einstellungen ``via_costs``, ``plane_via_costs``, ``autorouter.priority_via_costs``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-016
+
+[REQUIREMENT]
+MID: 22b6fa4e9fee44bc8061e10f05c2f9ce
+UID: RK-023
+STATUS: Vorschlag
+TITLE: Abstand zwischen Bohrungen
+STATEMENT: >>>
+Der Routing-Kern muss den kleinsten Abstand zwischen zwei Bohrungen einhalten, auch zwischen Vias desselben Netzes.
+<<<
+RATIONALE: >>>
+Innerhalb eines Netzes gibt es keinen Kupferabstand. Der Abstand der Bohrungen ist dort die einzige Grenze.
+<<<
+HERKUNFT: >>>
+Freerouting: ``rules/HoleSpacing.java``, Einstellungen ``hole_to_hole_um``, ``hole_clearance_um``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-009
+
+[REQUIREMENT]
+MID: cc66f9d4453d47cf80e5d59618b1551f
+UID: RK-024
+STATUS: Vorschlag
+TITLE: Routing ohne Vias
+STATEMENT: >>>
+Der Nutzer muss dem Routing-Kern das Setzen von Vias verbieten können.
+<<<
+HERKUNFT: >>>
+Freerouting: ``AutorouteControl.viasAllowed``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-012
+
+[REQUIREMENT]
+MID: e73a06ba050e4d7989a3f955c4dd98c9
+UID: RK-025
+STATUS: Vorschlag
+TITLE: Keine Vias ohne Funktion
+STATEMENT: >>>
+Der Routing-Kern muss jedes von ihm gesetzte Via entfernen, an dem nur auf einer Lage Kupfer des Netzes anschließt.
+<<<
+HERKUNFT: >>>
+Freerouting: ``autoroute/pipeline/DanglingCopper.java``, ``AutorouteControl.removeUnconnectedVias``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-016
+
+[[/SECTION]]
+
+[[SECTION]]
+MID: f8147832f49446bf98deb81f8ff914c8
+TITLE: Sperrflächen, Platinenrand und Kupferflächen
+
+[REQUIREMENT]
+MID: 00021f609540454b837e5cf29fa3f112
+UID: RK-030
+STATUS: Vorschlag
+TITLE: Sperrflächen
+STATEMENT: >>>
+Der Routing-Kern muss Sperrflächen beachten. Er muss dabei unterscheiden, ob eine Sperrfläche Leiterbahnen, Vias oder beides verbietet. Das gilt auch für Sperrflächen in Footprints.
+<<<
+HERKUNFT: >>>
+Freerouting: ``board/model/items/ObstacleArea.java``, ``ViaObstacleArea.java``, ``WireObstacleArea.java``, ``ComponentObstacleArea.java``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-009
+
+[REQUIREMENT]
+MID: 38542bc3669e4ee48f2c2ab38d064cdb
+UID: RK-031
+STATUS: Vorschlag
+TITLE: Abstand zum Platinenrand
+STATEMENT: >>>
+Der Routing-Kern muss mit Leiterbahnen und Vias den vorgegebenen Abstand zum Platinenrand und zu Ausschnitten einhalten.
+<<<
+HERKUNFT: >>>
+Freerouting: ``board/model/structure/BoardOutline.java``, Einstellung ``copper_to_edge_clearance_um``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-009
+
+[REQUIREMENT]
+MID: 097ca17e44834a7d99749d78aea3677d
+UID: RK-032
+STATUS: Vorschlag
+TITLE: Anschluss an eine Kupferfläche
+STATEMENT: >>>
+Hat ein Netz eine Kupferfläche auf einer anderen Lage, muss der Routing-Kern ein Pad dieses Netzes über ein Via an die Fläche anschließen können, statt eine Leiterbahn zum nächsten Pad zu verlegen.
+<<<
+HERKUNFT: >>>
+Freerouting: Einstellungen ``autorouter.plane_as_priority``, ``plane_nets``, ``plane_via_costs``, ``autorouter.plane_share_gap_um`` (500 µm).
+<<<
+COMMENT: >>>
+[Claude] Freerouting lässt zwei eng benachbarte Pads desselben Netzes ein Via teilen, wenn zwischen ihnen kein Platz für ein weiteres Via ist.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-017
+
+[REQUIREMENT]
+MID: 1f4e5b7f10054d2a83e3d951ecd9b2ef
+UID: RK-033
+STATUS: Vorschlag
+TITLE: Leiterbahnen durch fremde Kupferflächen
+STATEMENT: >>>
+Der Nutzer muss einstellen können, ob der Routing-Kern Leiterbahnen durch die Kupferfläche eines fremden Netzes verlegen darf oder ob die Fläche ein Hindernis ist.
+<<<
+RATIONALE: >>>
+KiCad füllt eine Zone um fremde Leiterbahnen herum neu. Jede Leiterbahn schwächt aber die Fläche.
+<<<
+HERKUNFT: >>>
+Freerouting: Einstellung ``plane_as_obstacle`` (Voreinstellung: kein Hindernis).
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-017
+
+[REQUIREMENT]
+MID: 1c4ec806cf924d399a78864e8355c402
+UID: RK-034
+STATUS: Vorschlag
+TITLE: Kupferflächen nicht zerteilen
+STATEMENT: >>>
+Der Routing-Kern darf eine Kupferfläche nicht so durchschneiden, dass Pads ihres Netzes von der Fläche abgetrennt werden. Entsteht dennoch eine abgetrennte Insel, muss er sie melden.
+<<<
+HERKUNFT: >>>
+Freerouting: ``autoroute/plane/FastPlaneConnectivityGrid.java``, ``drc/ZoneIslandViolation.java``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-017
+- TYPE: Parent
+  VALUE: UR-011
+
+[REQUIREMENT]
+MID: 3741c9680adb4fea8afc8bb8b2d19cf8
+UID: RK-035
+STATUS: Vorschlag
+TITLE: Anschlussart von Pads an Flächen
+STATEMENT: >>>
+Der Routing-Kern muss bei der Wertung, ob ein Pad an eine Kupferfläche angeschlossen ist, die Anschlussart des Pads beachten: vollflächig, über Wärmefallen oder gar nicht.
+<<<
+HERKUNFT: >>>
+Freerouting: ``board/model/items/PadPlaneConnection.java``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-017
+
+[REQUIREMENT]
+MID: 3791cb7054294d3da2217a3bdc4ec6ca
+UID: RK-036
+STATUS: Vorschlag
+TITLE: Schleifen über Kupferflächen
+STATEMENT: >>>
+Der Routing-Kern muss je Netzklasse einstellbar zulassen, dass eine Leiterbahn zwei Punkte verbindet, die schon über eine Kupferfläche verbunden sind.
+<<<
+RATIONALE: >>>
+Ohne diese Einstellung entfernt der Routing-Kern eine solche Leiterbahn als überflüssige Schleife.
+<<<
+HERKUNFT: >>>
+Freerouting: ``NetClass.getIgnoreCyclesWithAreas``, ``board/trace/PolylineTrace.java``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-017
+
+[[/SECTION]]
+
+[[SECTION]]
+MID: d1492b11cbe5402cb38fc0ba28d40070
+TITLE: Netzklassen und besondere Netze
+
+[REQUIREMENT]
+MID: 2dcfb6aabc204fbcbb89435394261962
+UID: RK-040
+STATUS: Vorschlag
+TITLE: Leiterbahnbreite je Netzklasse und Lage
+STATEMENT: >>>
+Der Routing-Kern muss jede Leiterbahn in der Breite verlegen, die ihre Netzklasse für die jeweilige Lage vorgibt.
+<<<
+HERKUNFT: >>>
+Freerouting: ``NetClass.getTraceHalfWidth(layer)``, ``traceWidthIsLayerDependent``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-009
+
+[REQUIREMENT]
+MID: de50341522f94bd5b6852b04e1e3d985
+UID: RK-041
+STATUS: Vorschlag
+TITLE: Abstände zwischen Netzklassen
+STATEMENT: >>>
+Der Routing-Kern muss für jedes Paar von Netzklassen den dafür vorgegebenen Abstand einhalten.
+<<<
+HERKUNFT: >>>
+Freerouting: ``rules/ClearanceMatrix.java``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-009
+
+[REQUIREMENT]
+MID: 6902f6bc168346a4acc19943d3845867
+UID: RK-042
+STATUS: Vorschlag
+TITLE: Vorrang für Netzklassen
+STATEMENT: >>>
+Der Nutzer muss Netzklassen Vorrang geben können. Der Routing-Kern muss Netze mit Vorrang zuerst routen und darf sie nicht zugunsten anderer Netze auflösen.
+<<<
+RATIONALE: >>>
+Netze, die kurz und direkt bleiben müssen, bekommen so den besten Weg.
+<<<
+HERKUNFT: >>>
+Freerouting: Einstellung ``autorouter.priority_net_classes``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-017
+
+[REQUIREMENT]
+MID: d752f589a3dc4462997f13d223c1c4d4
+UID: RK-043
+STATUS: Vorschlag
+TITLE: Netzklassen ausschließen
+STATEMENT: >>>
+Der Nutzer muss Netzklassen vom Routing ausschließen können.
+<<<
+HERKUNFT: >>>
+Freerouting: Einstellung ``autorouter.ignore_net_classes``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-002
+
+[REQUIREMENT]
+MID: 766601af0b2e4b9e94f1ff3f42704754
+UID: RK-044
+STATUS: Vorschlag
+TITLE: Differenzialpaare erkennen
+STATEMENT: >>>
+Der Routing-Kern muss Differenzialpaare an den Netznamen erkennen (Endungen ``+`` und ``-`` sowie ``_P`` und ``_N``). Versorgungsnetze darf er nicht als Paar werten.
+<<<
+HERKUNFT: >>>
+Freerouting: ``rules/DifferentialPairDetector.java``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-017
+
+[REQUIREMENT]
+MID: 14627e2304be4227b4a977a637e8ba38
+UID: RK-045
+STATUS: Vorschlag
+TITLE: Differenzialpaare gekoppelt routen
+STATEMENT: >>>
+Der Routing-Kern muss die beiden Netze eines Differenzialpaars nebeneinander im vorgegebenen Paarabstand verlegen und den größten erlaubten Längenunterschied einhalten.
+<<<
+HERKUNFT: >>>
+Freerouting: ``rules/DifferentialPair.java`` (``coupledSpacing``, ``maxSkew``). Freerouting liest diese Werte nur ein. Der Autorouter routet beide Netze einzeln.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-017
+
+[REQUIREMENT]
+MID: 9e00365269c9457480cf3c25b5977834
+UID: RK-046
+STATUS: Vorschlag
+TITLE: Längenvorgaben prüfen
+STATEMENT: >>>
+Der Routing-Kern muss für jedes Netz mit einer kleinsten oder größten Leiterbahnlänge prüfen, ob das Ergebnis die Vorgabe einhält, und Abweichungen melden.
+<<<
+HERKUNFT: >>>
+Freerouting: ``rules/NetLengthConstraint.java``, ``drc/NetIncompletes.java``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-017
+- TYPE: Parent
+  VALUE: UR-011
+
+[REQUIREMENT]
+MID: c37292db53614a55b5f68ac50993793f
+UID: RK-047
+STATUS: Vorschlag
+TITLE: Längenabgleich durch Mäander
+STATEMENT: >>>
+Der Routing-Kern muss eine zu kurze Leiterbahn durch Mäander auf die vorgegebene Länge bringen können. Amplitude, Abstand und Eckenform der Mäander müssen einstellbar sein.
+<<<
+HERKUNFT: >>>
+Freerouting: ``rules/NetMeanderConstraint.java``, Einstellungen ``meander_min_amplitude_mm``, ``meander_max_amplitude_mm``, ``meander_spacing_mm``, ``meander_corner_style``. Freerouting liest diese Werte nur ein. Der Autorouter erzeugt keine Mäander.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-017
+
+[REQUIREMENT]
+MID: 5ddd47bf9fa94d2b9eaaa7b369041ddb
+UID: RK-048
+STATUS: Vorschlag
+TITLE: Entkopplungskondensatoren
+STATEMENT: >>>
+Der Routing-Kern muss Entkopplungskondensatoren erkennen und sie auf kurzem Weg an den zugehörigen Versorgungspin anschließen.
+<<<
+HERKUNFT: >>>
+Freerouting: ``autoroute/decoupling/DecouplingIdentifier.java``. Freerouting erkennt die Kondensatoren nur und ändert das Routing dafür nicht.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-017
+
+[[/SECTION]]
+
+[[SECTION]]
+MID: 5dbfd7ca554e46138c6dca3098a90d46
+TITLE: Ablauf: Durchgänge, Auflösen, Schieben
+
+[REQUIREMENT]
+MID: 337d3814979f4566a4de7fc9acea4cb0
+UID: RK-050
+STATUS: Vorschlag
+TITLE: Mehrere Durchgänge
+STATEMENT: >>>
+Der Routing-Kern muss Verbindungen, die in einem Durchgang offen bleiben, in weiteren Durchgängen erneut versuchen.
+<<<
+HERKUNFT: >>>
+Freerouting: ``autoroute/pipeline/BatchAutorouter.java``, ``AutoroutePassRunner.java``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-015
+
+[REQUIREMENT]
+MID: d133058469fc40a28b6e5fc78d2f4374
+UID: RK-051
+STATUS: Vorschlag
+TITLE: Reihenfolge der Verbindungen
+STATEMENT: >>>
+Der Routing-Kern muss Verbindungen mit wenigen Ausweichmöglichkeiten vor Verbindungen mit vielen Ausweichmöglichkeiten routen.
+<<<
+HERKUNFT: >>>
+Freerouting: ``autoroute/ItemSelectionStrategy.java``, ``BallEscapeOrder.java``, Einstellung ``fanout.pin_sorting_order``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-015
+
+[REQUIREMENT]
+MID: 32c8a3bcaa9f4835a0cd29e5b0e17c6a
+UID: RK-052
+STATUS: Vorschlag
+TITLE: Steigende Kosten für das Auflösen
+STATEMENT: >>>
+In der Stufe "auflösen" muss der Routing-Kern das Entfernen fremder Leiterbahnen mit Kosten belegen, die von Durchgang zu Durchgang steigen.
+<<<
+RATIONALE: >>>
+Anfangs findet der Routing-Kern so schnell eine grobe Lösung. Später bleiben fertige Verbindungen bestehen.
+<<<
+HERKUNFT: >>>
+Freerouting: ``AutoroutePassRunner.java`` (``startRipupCosts * passNo``), Einstellung ``start_ripup_costs``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-014
+
+[REQUIREMENT]
+MID: 5b309244f8914d85b9dda419151cecf3
+UID: RK-053
+STATUS: Vorschlag
+TITLE: Kein wechselseitiges Auflösen
+STATEMENT: >>>
+Lösen zwei Netze einander wiederholt auf, muss der Routing-Kern das erkennen und einem der beiden Netze das Auflösen des anderen verbieten.
+<<<
+HERKUNFT: >>>
+Freerouting: ``autoroute/pipeline/RipupMemory.java``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-015
+
+[REQUIREMENT]
+MID: b3a8e6b43f73417394cc6e4c1352893a
+UID: RK-054
+STATUS: Vorschlag
+TITLE: Begrenzte Tiefe beim Schieben
+STATEMENT: >>>
+In der Stufe "schieben" muss der Routing-Kern Leiterbahnen und Vias verschieben können. Muss dafür weiteres Kupfer weichen, darf diese Kette eine einstellbare Tiefe nicht überschreiten.
+<<<
+HERKUNFT: >>>
+Freerouting: ``board/optimize/TraceShover.java``, ``board/actions/ForcedViaInserter.java``, ``AutorouteControl.maxShoveTraceRecursionDepth``, ``maxShoveViaRecursionDepth``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-014
+
+[REQUIREMENT]
+MID: 199c5a46b32a4d0b84d508a5eaea12ee
+UID: RK-055
+STATUS: Vorschlag
+TITLE: Netzklassen vor dem Schieben schützen
+STATEMENT: >>>
+Der Nutzer muss Netzklassen kennzeichnen können, deren Leiterbahnen der Routing-Kern nicht verschieben darf.
+<<<
+HERKUNFT: >>>
+Freerouting: ``NetClass.isShoveFixed``, ``board/model/structure/FixedState.java``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-004
+- TYPE: Parent
+  VALUE: UR-014
+
+[REQUIREMENT]
+MID: 0faa96f385724555b753d29d1921d271
+UID: RK-056
+STATUS: Vorschlag
+TITLE: Leiterbahnen straffen
+STATEMENT: >>>
+Nach dem Verlegen oder Verschieben muss der Routing-Kern die betroffenen Leiterbahnen straffen: Er muss unnötige Knicke und Umwege entfernen. Für einzelne Netzklassen muss sich das abschalten lassen.
+<<<
+HERKUNFT: >>>
+Freerouting: ``board/optimize/TraceTightener.java``, ``TraceTightener45.java``, ``TraceTightener90.java``, ``TraceTightenerAnyAngle.java``, ``NetClass.getPullTight``, Einstellung ``trace_pull_tight_accuracy``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-016
+
+[REQUIREMENT]
+MID: 5f2ef50690124021af75297d2ea3862e
+UID: RK-057
+STATUS: Vorschlag
+TITLE: Nachoptimierung
+STATEMENT: >>>
+Nach dem Routen muss der Routing-Kern das Ergebnis in weiteren Durchgängen verbessern können: weniger Vias, kürzere Leiterbahnen, weniger Knicke. Er darf eine Änderung nur behalten, wenn danach nicht mehr Verbindungen offen sind und nicht mehr Regeln verletzt sind als vorher.
+<<<
+HERKUNFT: >>>
+Freerouting: ``autoroute/pipeline/BatchOptimizer.java``, ``board/optimize/ViaNudger.java``, ``StepSlider.java``, Einstellungen ``optimizer.*``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-016
+
+[REQUIREMENT]
+MID: 47697dcdefc64fef9ee0770563f465fe
+UID: RK-058
+STATUS: Vorschlag
+TITLE: Kupferreste entfernen
+STATEMENT: >>>
+Der Routing-Kern muss von ihm verlegte Leiterbahnstücke entfernen, die an einem Ende nirgends anschließen. Vom Nutzer verlegtes Kupfer muss bleiben.
+<<<
+HERKUNFT: >>>
+Freerouting: ``autoroute/pipeline/DanglingCopper.java``, ``RoutingBoard.removeTraceTails``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-016
+- TYPE: Parent
+  VALUE: UR-004
+
+[REQUIREMENT]
+MID: 603910f953a64003b5374d40b5ce71e0
+UID: RK-059
+STATUS: Vorschlag
+TITLE: Ausweichstrategien bei Stillstand
+STATEMENT: >>>
+Bleiben Verbindungen offen und bringt ein weiterer Durchgang keine Verbesserung, muss der Routing-Kern das Routing mit geänderten Einstellungen wiederholen und das beste Ergebnis behalten.
+<<<
+HERKUNFT: >>>
+Freerouting: ``autoroute/pipeline/RoutingFallback.java``, ``RoutingSupervisor.java``, ``RetryNeighbourhood.java``, ``LastMileBlockerRipup.java``.
+<<<
+COMMENT: >>>
+[Claude] Freerouting räumt dabei unter anderem das Kupfer fremder Netze im Umfeld der offenen Verbindungen ab und vergrößert diesen Bereich von Versuch zu Versuch. Das setzt die Stufe "auflösen" voraus.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-015
+
+[[/SECTION]]
+
+[[SECTION]]
+MID: 37c0f3025e814a4a8ede0c39abca164f
+TITLE: Ende, Abbruch und Fehlerfälle
+
+[REQUIREMENT]
+MID: 4650ef1ee4f8408daca597d03dee3c3d
+UID: RK-070
+STATUS: Vorschlag
+TITLE: Ende des Routings
+STATEMENT: >>>
+Der Routing-Kern muss das Routing beenden, sobald eine dieser Bedingungen
+eintritt:
+
+- Alle Verbindungen sind hergestellt.
+- Die eingestellte größte Zahl von Durchgängen ist erreicht.
+- Eine eingestellte Zahl von Durchgängen in Folge hat keine Verbesserung
+  gebracht.
+- Das eingestellte Zeitlimit ist abgelaufen.
+- Der Nutzer bricht ab.
+<<<
+HERKUNFT: >>>
+Freerouting: Einstellungen ``autorouter.max_passes``, ``autorouter.stagnation_pass_limit`` (10), ``job_timeout``; ``autoroute/pipeline/AutorouteBatchLoop.java``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-011
+- TYPE: Parent
+  VALUE: UR-008
+
+[REQUIREMENT]
+MID: d35ede184bc346969e0676f3a1fc7061
+UID: RK-071
+STATUS: Vorschlag
+TITLE: Bestes Zwischenergebnis
+STATEMENT: >>>
+Endet das Routing, ohne dass alle Verbindungen hergestellt sind, muss der Routing-Kern den besten Stand liefern, den er erreicht hat.
+<<<
+RATIONALE: >>>
+Ein späterer Durchgang kann schlechter sein als ein früherer.
+<<<
+HERKUNFT: >>>
+Freerouting: ``autoroute/BoardHistory.java``, ``BoardHistoryEntry.java``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-015
+
+[REQUIREMENT]
+MID: 8d0aa6059b694bec9f959d1c86440077
+UID: RK-072
+STATUS: Vorschlag
+TITLE: Bericht über offene Verbindungen
+STATEMENT: >>>
+Der Routing-Kern muss für jede offene Verbindung das Netz und die beiden Endpunkte mit Bauteil und Pin melden.
+<<<
+HERKUNFT: >>>
+Freerouting: ``autoroute/pipeline/AutorouteUnroutedReport.java``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-011
+
+[REQUIREMENT]
+MID: 898ec0742b1747329aaf4b14f82b5d98
+UID: RK-073
+STATUS: Vorschlag
+TITLE: Wiederholte Fehlschläge
+STATEMENT: >>>
+Der Routing-Kern muss erkennen, wenn er dieselbe Verbindung wiederholt ohne Erfolg versucht, und weitere Versuche für diese Verbindung begrenzen.
+<<<
+HERKUNFT: >>>
+Freerouting: ``autoroute/RoutingFailureLog.java``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-015
+- TYPE: Parent
+  VALUE: UR-011
+
+[REQUIREMENT]
+MID: aea46d7fddc24b70b3fe4b5ea0a09a84
+UID: RK-074
+STATUS: Vorschlag
+TITLE: Vorhandene Regelverletzungen
+STATEMENT: >>>
+Enthält die Platine schon vor dem Routen Regelverletzungen, muss der Routing-Kern sie melden. Er darf sie nicht als eigene Fehler werten und ihre Zahl nicht erhöhen.
+<<<
+HERKUNFT: >>>
+Freerouting: ``drc/ClearanceBaseline.java``, ``board/optimize/ViaNudger.java``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-011
+- TYPE: Parent
+  VALUE: UR-009
+
+[REQUIREMENT]
+MID: f1b8f80c25584d1cb9e65811fc8fa955
+UID: RK-075
+STATUS: Vorschlag
+TITLE: Gleiches Ergebnis bei gleicher Eingabe
+STATEMENT: >>>
+Der Routing-Kern muss bei gleicher Platine und gleichen Einstellungen dasselbe Ergebnis liefern. Die Reihenfolge, in der KiCad Bauteile und Netze liefert, darf das Ergebnis nicht ändern.
+<<<
+HERKUNFT: >>>
+Freerouting: ``docs/settings.md``, Abschnitt "Reproducible placement import", Einstellung ``autorouter.item_order_seed``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-018
+
+[[/SECTION]]

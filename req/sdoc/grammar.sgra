@@ -48,6 +48,9 @@ ELEMENTS:
   - TITLE: RATIONALE
     TYPE: String
     REQUIRED: False
+  - TITLE: HERKUNFT
+    TYPE: String
+    REQUIRED: False
   - TITLE: COMMENT
     TYPE: String
     REQUIRED: False

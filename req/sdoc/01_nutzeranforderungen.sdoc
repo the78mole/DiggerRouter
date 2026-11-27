@@ -32,6 +32,7 @@ einem Dokument je Themengebiet:
 - [LINK: DR-SYS-PCB]
 - [LINK: DR-SYS-SIG]
 - [LINK: DR-SYS-RTE]
+- [LINK: DR-SYS-RK]
 - [LINK: DR-SYS-VOR]
 
 Jede Systemanforderung verweist auf die Nutzeranforderung, aus der sie folgt.
@@ -216,6 +217,54 @@ STATUS: Abgestimmt
 TITLE: Rückmeldung bei Problemen
 STATEMENT: >>>
 Der Nutzer muss erfahren, wenn das Plugin eine Aktion nicht oder nur teilweise ausführen konnte.
+<<<
+
+[[/SECTION]]
+
+[[SECTION]]
+MID: 56ed702606ea4e44bde5ccb496b2e4b2
+TITLE: Güte des Routings
+
+[REQUIREMENT]
+MID: 8cc56d16609142c6b57edc050ffd8177
+UID: UR-015
+STATUS: Vorschlag
+TITLE: Vollständiges Routing
+STATEMENT: >>>
+Der Nutzer muss sich darauf verlassen können, dass das Plugin jede Verbindung der gewählten Netze herstellt, für die es einen regelkonformen Weg gibt.
+<<<
+RATIONALE: >>>
+Jede offene Verbindung muss der Nutzer von Hand nacharbeiten.
+<<<
+
+[REQUIREMENT]
+MID: ea43d42c5b0549c6851aca4c2f5fc13b
+UID: UR-016
+STATUS: Vorschlag
+TITLE: Sauberes Ergebnis
+STATEMENT: >>>
+Der Nutzer muss ein Routing erhalten, das er ohne Nacharbeit übernehmen kann: kurze Leiterbahnen, wenige Vias, wenige Knicke und keine Kupferreste.
+<<<
+
+[REQUIREMENT]
+MID: 7cb5392c81d44bcd934e8c489aa3eda8
+UID: UR-017
+STATUS: Vorschlag
+TITLE: Besondere Netze und Kupferflächen
+STATEMENT: >>>
+Der Nutzer muss sich darauf verlassen können, dass das Plugin Versorgungsnetze, Kupferflächen, Differenzialpaare und Netze mit Längenvorgaben ihrer Aufgabe entsprechend behandelt.
+<<<
+
+[REQUIREMENT]
+MID: 4d82c7ae0f4c4ec79a066f9bd07636a2
+UID: UR-018
+STATUS: Vorschlag
+TITLE: Reproduzierbares Ergebnis
+STATEMENT: >>>
+Der Nutzer muss bei gleicher Platine und gleichen Einstellungen dasselbe Routing erhalten.
+<<<
+RATIONALE: >>>
+Nur so kann der Nutzer die Wirkung einer geänderten Einstellung beurteilen.
 <<<
 
 [[/SECTION]]

@@ -11,13 +11,15 @@ in `req/sdoc`.
 | `04_signalliste.sdoc` | Signallisten-Fenster | `SIG-` |
 | `05_routing.sdoc` | Routen, Auflösen, Verbindungsstand, Lagen, Eingriffstiefe, Rückgängig und Abbruch | `RTE-` |
 | `06_vorschlaege.sdoc` | Vorschläge ohne Themendokument, noch nicht bestätigt (derzeit leer) | `VOR-` |
+| `07_routing_kern.sdoc` | Verhalten des Routing-Kerns im Detail, abgeleitet aus Freerouting | `RK-` |
 | `grammar.sgra` | Gemeinsame Grammatik aller Dokumente | |
 
 Jede Systemanforderung verweist mit einer `Parent`-Relation auf die
 Nutzeranforderung, aus der sie folgt.
 
 Das Feld `STATUS` zeigt den Stand einer Anforderung: `Vorschlag`, `Abgestimmt`,
-`Umgesetzt` oder `Verifiziert`. Ein bestätigter Vorschlag aus
+`Umgesetzt` oder `Verifiziert`. Das Feld `HERKUNFT` nennt die Quelle, aus der eine
+Anforderung abgeleitet ist. Ein bestätigter Vorschlag aus
 `06_vorschlaege.sdoc` wandert mit neuer UID in das Dokument seines
 Themengebiets.
 
