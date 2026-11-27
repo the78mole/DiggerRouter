@@ -107,7 +107,7 @@ RELATIONS:
 [REQUIREMENT]
 MID: 6efa95e19f5c46df91e5b5a97db0d876
 UID: RTE-012
-STATUS: Abgestimmt
+STATUS: Vorschlag
 TITLE: Zahl der verbundenen Endpunkte
 STATEMENT: >>>
 Das Plugin muss die Zahl ``x`` der verbundenen Endpunkte eines Netzes mit ``y``
