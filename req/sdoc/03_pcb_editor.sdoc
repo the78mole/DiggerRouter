@@ -1,0 +1,64 @@
+[DOCUMENT]
+MID: 7a47b8886bbf4975ac35607b4ac00c18
+TITLE: DiggerRouter: Knöpfe im PCB-Editor
+UID: DR-SYS-PCB
+VERSION: @GIT_VERSION (Git-Branch: @GIT_BRANCH)
+DATE: @GIT_COMMIT_DATETIME
+PREFIX: PCB-
+OPTIONS:
+  ENABLE_MID: True
+  VIEW_STYLE: Table
+  NODE_IN_TOC: True
+
+[GRAMMAR]
+IMPORT_FROM_FILE: @diggerrouter
+
+[REQUIREMENT]
+MID: 8da180fd73c546e5973d6dbdeac0ee7f
+UID: PCB-001
+STATUS: Abgestimmt
+TITLE: Knopf "Ausgewähltes Netz routen"
+STATEMENT: >>>
+Das Plugin muss in der Werkzeugleiste des PCB-Editors einen Knopf anbieten, der das ausgewählte Netz routet.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-003
+
+[REQUIREMENT]
+MID: 8fee1792b6d04a6bb270315ddd8c1d16
+UID: PCB-002
+STATUS: Abgestimmt
+TITLE: Netz aus dem Cross-Probing
+STATEMENT: >>>
+Der Knopf aus [LINK: PCB-001] muss das Netz routen, das der Nutzer im Schaltplan ausgewählt hat und das KiCad per Cross-Probing im PCB-Editor ausgewählt oder hervorgehoben hat.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-003
+
+[REQUIREMENT]
+MID: fce7595abe0a47a4955d472c0670a2c4
+UID: PCB-004
+STATUS: Abgestimmt
+TITLE: Rückfrage ohne ausgewähltes Netz
+STATEMENT: >>>
+Ist beim Klick auf den Knopf aus [LINK: PCB-001] kein Netz ausgewählt, muss das Plugin den Nutzer fragen, ob es stattdessen alle unfertigen Netze routen soll.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-011
+- TYPE: Parent
+  VALUE: UR-002
+
+[REQUIREMENT]
+MID: 105d6976d1c140bba208ae84874094ea
+UID: PCB-003
+STATUS: Abgestimmt
+TITLE: Knopf "Signalliste"
+STATEMENT: >>>
+Das Plugin muss in der Werkzeugleiste des PCB-Editors direkt unter dem Knopf aus [LINK: PCB-001] einen Knopf anbieten, der das Signallisten-Fenster öffnet.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-006

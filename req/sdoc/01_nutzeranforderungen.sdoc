@@ -1,0 +1,279 @@
+[DOCUMENT]
+MID: 2062caf2a44448feb4bb0654041e9ecd
+TITLE: DiggerRouter: Nutzeranforderungen
+UID: DR-NUTZER
+VERSION: @GIT_VERSION (Git-Branch: @GIT_BRANCH)
+DATE: @GIT_COMMIT_DATETIME
+PREFIX: UR-
+OPTIONS:
+  ENABLE_MID: True
+  VIEW_STYLE: Table
+  NODE_IN_TOC: True
+
+[GRAMMAR]
+IMPORT_FROM_FILE: @diggerrouter
+
+[[SECTION]]
+MID: d688c45c1e1d4ee0bfdace0e6337d4b6
+TITLE: Einleitung
+
+[TEXT]
+MID: 3e35a967f2434032a3ef2f9b9fd5f07c
+STATEMENT: >>>
+DiggerRouter ist ein Plugin für KiCad. Es routet Leiterbahnen direkt im
+PCB-Editor: für das im Schaltplan ausgewählte Signal, für eine Auswahl von
+Signalen oder für alle Signale.
+
+Dieses Dokument beschreibt, was der Nutzer mit dem Plugin erreichen will. Die
+Systemanforderungen leiten daraus das Verhalten des Plugins ab. Sie stehen in
+einem Dokument je Themengebiet:
+
+- [LINK: DR-SYS-ARCH]
+- [LINK: DR-SYS-PCB]
+- [LINK: DR-SYS-SIG]
+- [LINK: DR-SYS-RTE]
+- [LINK: DR-SYS-RK]
+- [LINK: DR-SYS-VOR]
+
+Jede Systemanforderung verweist auf die Nutzeranforderung, aus der sie folgt.
+
+Die Begriffe "Signal" und "Netz" bezeichnen in allen Dokumenten dasselbe: ein
+Netz der Platine in KiCad.
+
+Das Feld STATUS zeigt den Stand einer Anforderung:
+
+- ``Vorschlag``: noch nicht bestätigt, zum Beispiel von Claude ergänzt oder abgeleitet.
+- ``Abgestimmt``: mit dem Nutzer geklärt.
+- ``Umgesetzt``: im Code umgesetzt.
+- ``Verifiziert``: durch einen Test oder eine Prüfung nachgewiesen.
+<<<
+
+[[/SECTION]]
+
+[[SECTION]]
+MID: 244960822ab04e739256ad1feee6a6a6
+TITLE: Routing in KiCad
+
+[REQUIREMENT]
+MID: bbd0946542454d8694f5b725f39d022a
+UID: UR-001
+STATUS: Abgestimmt
+TITLE: Routing ohne Werkzeugwechsel
+STATEMENT: >>>
+Der Nutzer muss Netze routen können, ohne KiCad zu verlassen und ohne die Platine zu exportieren oder zu importieren.
+<<<
+RATIONALE: >>>
+Externe Autorouter brauchen einen Export und einen Import der Platine. Dieser Umweg kostet Zeit und trennt das Routing vom restlichen Entwurf.
+<<<
+
+[REQUIREMENT]
+MID: e01ad2fdd2c54eca8bd040b3c24950ec
+UID: UR-002
+STATUS: Abgestimmt
+TITLE: Umfang des Routings wählen
+STATEMENT: >>>
+Der Nutzer muss wählen können, ob das Plugin ein einzelnes Netz, eine Auswahl von Netzen oder alle Netze routet.
+<<<
+
+[REQUIREMENT]
+MID: 1cd690fbe730468ca043792274bc8960
+UID: UR-003
+STATUS: Abgestimmt
+TITLE: Netz aus dem Schaltplan routen
+STATEMENT: >>>
+Der Nutzer muss ein Netz im Schaltplan auswählen und es danach mit einem Klick im PCB-Editor routen können.
+<<<
+RATIONALE: >>>
+Der Nutzer denkt in Signalen des Schaltplans. Er soll das Netz nicht ein zweites Mal im PCB-Editor suchen müssen.
+<<<
+
+[REQUIREMENT]
+MID: 3006581bed3f45c68d558f683ddfd079
+UID: UR-004
+STATUS: Abgestimmt
+TITLE: Vorhandene Leiterbahnen schützen
+STATEMENT: >>>
+Der Nutzer muss sich darauf verlassen können, dass das Routing bereits verlegte Leiterbahnen und Vias höchstens regelkonform verschiebt und sie nie auflöst, solange er das nicht nach [LINK: UR-014] erlaubt hat.
+<<<
+RATIONALE: >>>
+Kritische Signale verlegt der Nutzer von Hand. Diese Arbeit darf das Plugin nicht zerstören. Ein Verschieben, das alle Design Rules einhält, erhält die Verbindung und ihre Eigenschaften.
+<<<
+
+[REQUIREMENT]
+MID: 52670214d9044e7a9da0a42571192967
+UID: UR-014
+STATUS: Abgestimmt
+TITLE: Eingriffstiefe wählen
+STATEMENT: >>>
+Der Nutzer muss wählen können, wie tief das Routing in vorhandene Leiterbahnen eingreifen darf: kein Eingriff, andere Signale schieben oder andere Signale auflösen, die im Weg sind.
+<<<
+RATIONALE: >>>
+Auf einer dicht belegten Platine findet das Routing ohne Eingriff oft keinen Weg. Der Nutzer entscheidet, wie viel seiner bisherigen Arbeit das Plugin dafür verändern darf.
+<<<
+
+[REQUIREMENT]
+MID: 8ab32f62d80446de921281464e6a3c16
+UID: UR-005
+STATUS: Abgestimmt
+TITLE: Routing eines Netzes auflösen
+STATEMENT: >>>
+Der Nutzer muss das gesamte Routing eines Netzes mit einem Klick entfernen können.
+<<<
+RATIONALE: >>>
+So kann der Nutzer ein Netz schnell neu routen lassen oder Platz für andere Netze schaffen.
+<<<
+
+[REQUIREMENT]
+MID: a7ba50aaf6064d5b94b0599fade173c1
+UID: UR-012
+STATUS: Abgestimmt
+TITLE: Lagenverfügbarkeit für Auto-Routing auswählen
+STATEMENT: >>>
+Der Nutzer soll die Möglichkeit haben, das Routing für die ausgewählten Netze auf bestimmte Lagen zu beschränken. Dabei soll es die Möglichkeit geben, bestimmte Layer zu bevorzugen, auf einzelnen Layern Vorzugsrichtungen festzulegen, Layer vom Routing möglichst auszunehmen und Layer komplett auszuschließen.
+<<<
+RATIONALE: >>>
+Der Nutzer legt einige Layer bereits für die Versorgungsspannung fest, um eine möglichst niederohmige Anbindung zu gewährleisten und die EMV zu optimieren. Generell ist Signalrouting dort möglich, aber es verschlechtert beide Zielgrößen dieser speziellen Lagen und ist nach Möglichkeit zu vermeiden. Auch gibt es Lagen, die für bestimmte Signalklassen (z.B. High-Speed oder RF) genutzt werden und möglichst wenig von anderen Signalen belegt werden sollen.
+<<<
+
+[REQUIREMENT]
+MID: 32ae6fdf99f54f5e832a47e7f8e96f5d
+UID: UR-009
+STATUS: Abgestimmt
+TITLE: Regelkonformes Ergebnis
+STATEMENT: >>>
+Der Nutzer muss sich darauf verlassen können, dass vom Plugin verlegte Leiterbahnen und Vias die Design Rules der Platine einhalten.
+<<<
+RATIONALE: >>>
+Ein Routing mit DRC-Fehlern muss der Nutzer von Hand nacharbeiten.
+<<<
+
+[REQUIREMENT]
+MID: ed7db7eda77348beb9075db6134702d1
+UID: UR-010
+STATUS: Abgestimmt
+TITLE: Aktionen rückgängig machen
+STATEMENT: >>>
+Der Nutzer muss jede Aktion des Plugins im PCB-Editor rückgängig machen können.
+<<<
+RATIONALE: >>>
+Das gilt besonders für "auflösen", das auch von Hand verlegte und gesperrte Leiterbahnen löscht.
+<<<
+
+[[/SECTION]]
+
+[[SECTION]]
+MID: 9a7586be93bd4aa5908e62bdecc2b49c
+TITLE: Überblick und Bedienung
+
+[REQUIREMENT]
+MID: 3c57ed64f5d7490cbad7a62a5d78dea7
+UID: UR-006
+STATUS: Abgestimmt
+TITLE: Überblick über den Routing-Stand
+STATEMENT: >>>
+Der Nutzer muss für alle Netze der Platine auf einen Blick sehen können, wie weit jedes Netz geroutet ist.
+<<<
+
+[REQUIREMENT]
+MID: e1aea4aeb30443128a09fef343b6023b
+UID: UR-007
+STATUS: Abgestimmt
+TITLE: Güte des Routings beurteilen
+STATEMENT: >>>
+Der Nutzer muss für jedes Netz die geroutete Länge mit der kürzesten möglichen Länge vergleichen können.
+<<<
+RATIONALE: >>>
+Der Vergleich zeigt Umwege im Routing eines Netzes.
+<<<
+
+[REQUIREMENT]
+MID: d842eb2048594c3893ff2e9752ec1600
+UID: UR-008
+STATUS: Abgestimmt
+TITLE: Parallel weiterarbeiten
+STATEMENT: >>>
+Der Nutzer muss im PCB-Editor weiterarbeiten können, während der Überblick über die Netze sichtbar bleibt.
+<<<
+RATIONALE: >>>
+Der Nutzer kennt dieses Verhalten vom DRC-Fenster in KiCad.
+<<<
+
+[REQUIREMENT]
+MID: 02d55ae3494a457cb46d8a501e7d3f86
+UID: UR-013
+STATUS: Abgestimmt
+TITLE: Aktueller Überblick beim manuellen Routen
+STATEMENT: >>>
+Während der Nutzer von Hand routet, muss der Überblick über die Netze den neuen Stand zeigen, sobald der Nutzer die Leiterbahn pinnt, also einen Zwischenschritt mit der Maustaste festlegt.
+<<<
+RATIONALE: >>>
+Der Nutzer sieht den Fortschritt schon während des Verlegens und nicht erst, wenn die Leiterbahn fertig ist.
+<<<
+
+[REQUIREMENT]
+MID: 5583d1a4b3b444abaf4563f5ac8b5491
+UID: UR-011
+STATUS: Abgestimmt
+TITLE: Rückmeldung bei Problemen
+STATEMENT: >>>
+Der Nutzer muss erfahren, wenn das Plugin eine Aktion nicht oder nur teilweise ausführen konnte.
+<<<
+
+[[/SECTION]]
+
+[[SECTION]]
+MID: 56ed702606ea4e44bde5ccb496b2e4b2
+TITLE: Güte des Routings
+
+[REQUIREMENT]
+MID: 8cc56d16609142c6b57edc050ffd8177
+UID: UR-015
+STATUS: Vorschlag
+TITLE: Vollständiges Routing
+STATEMENT: >>>
+Der Nutzer muss sich darauf verlassen können, dass das Plugin jede Verbindung der gewählten Netze herstellt, für die es einen regelkonformen Weg gibt.
+<<<
+RATIONALE: >>>
+Jede offene Verbindung muss der Nutzer von Hand nacharbeiten.
+<<<
+
+[REQUIREMENT]
+MID: ea43d42c5b0549c6851aca4c2f5fc13b
+UID: UR-016
+STATUS: Vorschlag
+TITLE: Sauberes Ergebnis
+STATEMENT: >>>
+Der Nutzer muss ein Routing erhalten, das er ohne Nacharbeit übernehmen kann: kurze Leiterbahnen, wenige Vias, wenige Knicke und keine Kupferreste.
+<<<
+
+[REQUIREMENT]
+MID: 7cb5392c81d44bcd934e8c489aa3eda8
+UID: UR-017
+STATUS: Vorschlag
+TITLE: Besondere Netze und Kupferflächen
+STATEMENT: >>>
+Der Nutzer muss sich darauf verlassen können, dass das Plugin Versorgungsnetze, Kupferflächen, Differenzialpaare und Netze mit Längenvorgaben ihrer Aufgabe entsprechend behandelt.
+<<<
+
+[REQUIREMENT]
+MID: b7b4d0ff96764faba71a15703ad805ad
+UID: UR-019
+STATUS: Abgestimmt
+TITLE: EMV- und Schutzbeschaltung beachten
+STATEMENT: >>>
+Der Nutzer muss sich darauf verlassen können, dass das Plugin EMV- und Schutzbeschaltungen so anschließt, dass sie wirken. Eine TVS-Diode muss im Signalweg liegen oder über einen kurzen Stub angebunden sein.
+<<<
+
+[REQUIREMENT]
+MID: 4d82c7ae0f4c4ec79a066f9bd07636a2
+UID: UR-018
+STATUS: Vorschlag
+TITLE: Reproduzierbares Ergebnis
+STATEMENT: >>>
+Der Nutzer muss bei gleicher Platine und gleichen Einstellungen dasselbe Routing erhalten.
+<<<
+RATIONALE: >>>
+Nur so kann der Nutzer die Wirkung einer geänderten Einstellung beurteilen.
+<<<
+
+[[/SECTION]]

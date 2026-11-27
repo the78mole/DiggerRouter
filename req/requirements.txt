@@ -1,0 +1,3 @@
+# StrictDoc aus dem Fork the78mole/strictdoc, Branch feature/static-editing.
+# Der Commit enthält STATIC_EDITING und den Single-File-Export (html-single).
+strictdoc @ git+https://github.com/the78mole/strictdoc@ca07c96b9e3c2fe934d7b581f77a440bb3257226

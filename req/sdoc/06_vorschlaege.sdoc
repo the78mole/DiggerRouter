@@ -1,0 +1,20 @@
+[DOCUMENT]
+MID: 677e80a7936f4e7b9af3b0ab0d0c3360
+TITLE: DiggerRouter: Vorschläge
+UID: DR-SYS-VOR
+VERSION: @GIT_VERSION (Git-Branch: @GIT_BRANCH)
+DATE: @GIT_COMMIT_DATETIME
+PREFIX: VOR-
+OPTIONS:
+  ENABLE_MID: True
+  VIEW_STYLE: Table
+  NODE_IN_TOC: True
+
+[GRAMMAR]
+IMPORT_FROM_FILE: @diggerrouter
+
+[TEXT]
+MID: 02e5f034f0344e858e859454a1bd5d2b
+STATEMENT: >>>
+Dieses Dokument sammelt vorgeschlagene Systemanforderungen, die der Nutzer noch nicht bestätigt hat und die zu keinem bestehenden Abschnitt gehören. Eine bestätigte Anforderung wandert mit neuer UID in das Dokument ihres Themengebiets. Derzeit ist kein Vorschlag offen.
+<<<

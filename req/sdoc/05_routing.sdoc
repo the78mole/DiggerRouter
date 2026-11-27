@@ -1,0 +1,396 @@
+[DOCUMENT]
+MID: fa384033bb48400b99ce1d8c3c248243
+TITLE: DiggerRouter: Routen und Auflösen
+UID: DR-SYS-RTE
+VERSION: @GIT_VERSION (Git-Branch: @GIT_BRANCH)
+DATE: @GIT_COMMIT_DATETIME
+PREFIX: RTE-
+OPTIONS:
+  ENABLE_MID: True
+  VIEW_STYLE: Table
+  NODE_IN_TOC: True
+
+[GRAMMAR]
+IMPORT_FROM_FILE: @diggerrouter
+
+[[SECTION]]
+MID: dfe3123fbb5e4c598c8730a6c66f9647
+TITLE: Routen
+
+[REQUIREMENT]
+MID: d0a357c8292e4ceeadb3e62089e6c768
+UID: RTE-001
+STATUS: Abgestimmt
+TITLE: Routen ergänzt nur
+STATEMENT: >>>
+In der Stufe "kein Eingriff" nach [LINK: RTE-030] muss das Plugin beim Routen eines Netzes alle vorhandenen Leiterbahnen und Vias unverändert lassen und nur die fehlenden Verbindungen ergänzen.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-004
+
+[REQUIREMENT]
+MID: af8177b4009546f2a13d9e123d31b358
+UID: RTE-002
+STATUS: Abgestimmt
+TITLE: Teilweise geroutete Netze fertig routen
+STATEMENT: >>>
+Beim Routen eines teilweise gerouteten Netzes muss das Plugin die vorhandenen Leiterbahnen und Vias des Netzes als Teil der Verbindung nutzen.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-004
+
+[REQUIREMENT]
+MID: c31fede7e61944f482a6e091298bbb58
+UID: RTE-005
+STATUS: Abgestimmt
+TITLE: Design Rules einhalten
+STATEMENT: >>>
+Das Plugin muss beim Routen die Design Rules der Platine und der Netzklassen einhalten: Abstände, Leiterbahnbreiten und Via-Größen.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-009
+
+[REQUIREMENT]
+MID: 05fb2ef8762749d0827b3d56ec6d4dc1
+UID: RTE-006
+STATUS: Abgestimmt
+TITLE: Meldung bei unvollständigem Routing
+STATEMENT: >>>
+Kann das Plugin ein Netz nicht vollständig routen, muss es die verlegten Teile behalten und dem Nutzer melden, welche Netze unvollständig sind.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-011
+
+[[/SECTION]]
+
+[[SECTION]]
+MID: a668da7515f94f179d9798d234d57ab0
+TITLE: Auflösen
+
+[REQUIREMENT]
+MID: aedbd5280bdf430396e9860c13a6a2f0
+UID: RTE-003
+STATUS: Abgestimmt
+TITLE: Auflösen löscht das gesamte Routing
+STATEMENT: >>>
+Beim Auflösen eines Netzes muss das Plugin alle Leiterbahnen und alle Vias des Netzes löschen.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-005
+
+[REQUIREMENT]
+MID: b178b0d8489d4b2bb60984fb11e0b159
+UID: RTE-004
+STATUS: Abgestimmt
+TITLE: Auflösen löscht auch manuelle und gesperrte Elemente
+STATEMENT: >>>
+Beim Auflösen eines Netzes muss das Plugin auch Leiterbahnen und Vias löschen, die der Nutzer von Hand verlegt hat oder die gesperrt (locked) sind.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-005
+
+[REQUIREMENT]
+MID: c1b50f709d7848f485c444ed63d008ee
+UID: RTE-007
+STATUS: Abgestimmt
+TITLE: Rückfrage vor dem Löschen gesperrter Elemente
+STATEMENT: >>>
+Betrifft "auflösen" gesperrte Leiterbahnen oder Vias, muss das Plugin vor dem Löschen eine Bestätigung des Nutzers einholen.
+<<<
+RATIONALE: >>>
+Der Nutzer sperrt Elemente, um sie vor versehentlichen Änderungen zu schützen.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-005
+
+[[/SECTION]]
+
+[[SECTION]]
+MID: 2d8c03e10ff54987a1f47c64603d6bab
+TITLE: Verbindungsstand
+
+[REQUIREMENT]
+MID: ce95d22a2c1d416aba6cac8c86fb132e
+UID: RTE-010
+STATUS: Abgestimmt
+TITLE: Endpunkte eines Netzes
+STATEMENT: >>>
+Das Plugin muss jedes Pad eines Netzes als Endpunkt zählen. Pads, die im Schaltplan als nicht verbunden markiert sind (No-Connect, X im Schaltplan), zählen nicht.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-006
+
+[REQUIREMENT]
+MID: 9b548570d3814f59960635c0edaa9a5a
+UID: RTE-011
+STATUS: Abgestimmt
+TITLE: Verbindung über Kupferflächen
+STATEMENT: >>>
+Das Plugin muss zwei Endpunkte als verbunden werten, wenn sie über Leiterbahnen, Vias oder eine Kupferfläche des Netzes elektrisch verbunden sind.
+<<<
+RATIONALE: >>>
+So stimmt der Verbindungsstand mit dem Ratsnest von KiCad überein.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-006
+
+[REQUIREMENT]
+MID: 6efa95e19f5c46df91e5b5a97db0d876
+UID: RTE-012
+STATUS: Abgestimmt
+TITLE: Zahl der verbundenen Endpunkte
+STATEMENT: >>>
+Das Plugin muss die Zahl ``x`` der verbundenen Endpunkte eines Netzes mit ``y``
+Endpunkten so bestimmen:
+
+- Ist kein Endpunkt mit einem anderen verbunden, gilt ``x = 0``. Die Ausnahme
+  steht in [LINK: RTE-014].
+- Sonst gilt ``x = y - (k - 1)``. Dabei ist ``k`` die Zahl der Gruppen von
+  Endpunkten, die untereinander verbunden sind. Ein einzelner unverbundener
+  Endpunkt zählt als eigene Gruppe.
+
+Beispiele für ein Netz mit 4 Endpunkten: Sind 2 Endpunkte verbunden, gilt
+``2/4``. Sind 2 Paare jeweils verbunden, gilt ``3/4``. Sind alle verbunden,
+gilt ``4/4``.
+<<<
+RATIONALE: >>>
+Mit dieser Regel ist ein Netz genau dann vollständig, wenn ``x = y`` gilt. Jede ergänzte Verbindung erhöht ``x``.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-006
+
+[REQUIREMENT]
+MID: 9826af9a33e34eec9e4a19d8b0885d34
+UID: RTE-014
+STATUS: Abgestimmt
+TITLE: Angefangene Verbindung
+STATEMENT: >>>
+Ist kein Endpunkt eines Netzes mit einem anderen verbunden, aber an mindestens
+einem Endpunkt eine unfertige Leiterbahn angeschlossen, muss das Plugin
+``x = 1`` werten.
+
+Der Zustand ``x = 1`` tritt nur in diesem Fall auf, zum Beispiel während der
+Nutzer das Netz gerade von Hand routet.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-006
+- TYPE: Parent
+  VALUE: UR-013
+
+[REQUIREMENT]
+MID: 7a10bb450f6341bdb9b20a141cbaa735
+UID: RTE-013
+STATUS: Abgestimmt
+TITLE: Routing-Stand eines Netzes
+STATEMENT: >>>
+Das Plugin muss ein Netz mit ``x = 0`` als ungeroutet, ein Netz mit ``0 < x < y`` als teilweise geroutet und ein Netz mit ``x = y`` als vollständig geroutet werten.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-006
+
+[[/SECTION]]
+
+[[SECTION]]
+MID: dd6379a0d3814f198a22f3066e0295ed
+TITLE: Lagen
+
+[REQUIREMENT]
+MID: b928feda6a30409b97f8b10840afe3dd
+UID: RTE-020
+STATUS: Abgestimmt
+TITLE: Lagen ausschließen
+STATEMENT: >>>
+Der Nutzer muss einzelne Lagen vom Routing der ausgewählten Netze ausschließen können. Das Plugin darf auf einer ausgeschlossenen Lage keine Leiterbahn verlegen.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-012
+
+[REQUIREMENT]
+MID: 09fd5a29355a405881e1d05ea753fb11
+UID: RTE-021
+STATUS: Abgestimmt
+TITLE: Lagen meiden
+STATEMENT: >>>
+Der Nutzer muss einzelne Lagen als zu meiden kennzeichnen können. Das Plugin darf eine solche Lage nur nutzen, wenn es ohne sie keine Verbindung findet.
+<<<
+RATIONALE: >>>
+Auf Lagen für die Versorgungsspannung ist Signalrouting möglich, verschlechtert aber die niederohmige Anbindung und die EMV.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-012
+
+[REQUIREMENT]
+MID: bbc19a0c9b43403cb9859ec6ca99e7a9
+UID: RTE-022
+STATUS: Abgestimmt
+TITLE: Lagen bevorzugen
+STATEMENT: >>>
+Der Nutzer muss einzelne Lagen als bevorzugt kennzeichnen können. Das Plugin muss Leiterbahnen vorrangig auf den bevorzugten Lagen verlegen.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-012
+
+[REQUIREMENT]
+MID: 0e0ae00e20eb490c8a7bae3c395f48de
+UID: RTE-023
+STATUS: Abgestimmt
+TITLE: Vorzugsrichtung je Lage
+STATEMENT: >>>
+Der Nutzer muss für einzelne Lagen eine Vorzugsrichtung festlegen können. Das Plugin muss Leiterbahnen auf einer solchen Lage vorrangig in dieser Richtung verlegen.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-012
+
+[[/SECTION]]
+
+[[SECTION]]
+MID: 20285575422d42f09de86c45766f361c
+TITLE: Eingriffstiefe
+
+[REQUIREMENT]
+MID: 3fc7b57f15544c409b62f4f59327a894
+UID: RTE-030
+STATUS: Abgestimmt
+TITLE: Stufen der Eingriffstiefe
+STATEMENT: >>>
+Der Nutzer muss für das Routen zwischen drei Stufen wählen können: "kein Eingriff", "schieben" und "auflösen".
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-014
+
+[REQUIREMENT]
+MID: 4871b02b606a4a64936a9612008b69db
+UID: RTE-031
+STATUS: Abgestimmt
+TITLE: Stufe "schieben"
+STATEMENT: >>>
+In der Stufe "schieben" darf das Plugin vorhandene Leiterbahnen und Vias anderer Netze verschieben, um Platz für die neue Verbindung zu schaffen. Die verschobenen Netze müssen verbunden bleiben und weiter alle Design Rules einhalten: Abstände, Vorgaben zur Leitungslänge und Längengleichheit.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-014
+
+[REQUIREMENT]
+MID: 3525678a1c8d47d7807f7c0d6a406f9e
+UID: RTE-032
+STATUS: Abgestimmt
+TITLE: Stufe "auflösen"
+STATEMENT: >>>
+In der Stufe "auflösen" darf das Plugin zusätzlich Leiterbahnen und Vias anderer Netze entfernen, die der neuen Verbindung im Weg sind.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-014
+
+[REQUIREMENT]
+MID: 45783f0c43444a22badb165d019c1def
+UID: RTE-034
+STATUS: Abgestimmt
+TITLE: Aufgelöste Netze neu routen
+STATEMENT: >>>
+Hat das Plugin in der Stufe "auflösen" Leiterbahnen oder Vias anderer Netze entfernt, muss es diese Netze danach selbst neu routen.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-014
+
+[REQUIREMENT]
+MID: 3d00b3514ea1481c8054d5cd5be5ca37
+UID: RTE-035
+STATUS: Abgestimmt
+TITLE: Rückfrage vor dem Eingriff in gesperrte Elemente
+STATEMENT: >>>
+Würde das Plugin in der Stufe "schieben" oder "auflösen" gesperrte Leiterbahnen oder Vias verändern, muss es vorher eine Bestätigung des Nutzers einholen.
+<<<
+RATIONALE: >>>
+Der Nutzer sperrt Elemente, um sie vor versehentlichen Änderungen zu schützen.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-014
+
+[REQUIREMENT]
+MID: f3660dfc0812414ba9b24ac944dff52e
+UID: RTE-033
+STATUS: Abgestimmt
+TITLE: Voreinstellung der Eingriffstiefe
+STATEMENT: >>>
+Die Voreinstellung der Eingriffstiefe muss "schieben" sein.
+<<<
+RATIONALE: >>>
+Schieben verändert vorhandene Leiterbahnen nur regelkonform, siehe [LINK: RTE-031]. Das lässt [LINK: UR-004] zu.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-004
+- TYPE: Parent
+  VALUE: UR-014
+
+[[/SECTION]]
+
+[[SECTION]]
+MID: a49dfe05d0af455f9f4b557a7ced7500
+TITLE: Rückgängig und Abbruch
+
+[REQUIREMENT]
+MID: efabffff8e2c40b9bc3019ecbab6cb13
+UID: RTE-040
+STATUS: Abgestimmt
+TITLE: Ein Undo-Schritt je Aktion
+STATEMENT: >>>
+Das Plugin muss jede Aktion "routen" oder "auflösen" so ausführen, dass der Nutzer sie im PCB-Editor mit einem einzigen Undo-Schritt rückgängig machen kann.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-010
+
+[REQUIREMENT]
+MID: a3da519c7c7e442792d837c193a8dec7
+UID: RTE-041
+STATUS: Abgestimmt
+TITLE: Routing abbrechen
+STATEMENT: >>>
+Der Nutzer muss ein laufendes Routing abbrechen können.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-008
+
+[REQUIREMENT]
+MID: 666ccad77eda40b49edeebbf6565e7d6
+UID: RTE-042
+STATUS: Abgestimmt
+TITLE: Rückfrage beim Abbruch
+STATEMENT: >>>
+Bricht der Nutzer ein laufendes Routing ab, muss das Plugin in einem Dialog
+fragen, was mit dem unfertigen Routing geschehen soll:
+
+- beibehalten,
+- löschen: Das Plugin entfernt nur die unfertige Leiterbahn.
+- den Zustand vor dem Routing wiederherstellen: Das Plugin entfernt alles, was
+  dieser Lauf verlegt hat.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-008
+- TYPE: Parent
+  VALUE: UR-010
+
+[[/SECTION]]
