@@ -861,7 +861,7 @@ UID: RK-061
 STATUS: Abgestimmt
 TITLE: Schutzbauteile erkennen
 STATEMENT: >>>
-Der Routing-Kern muss ein Bauteil als Schutzbauteil behandeln, wenn sein Feld ``DR_Rolle`` den Wert ``Schutz`` hat. Das gilt für TVS-Dioden, ESD-Schutzarrays, Varistoren und Gasableiter.
+Der Routing-Kern muss ein Bauteil als Schutzbauteil behandeln, wenn sein Feld ``DR_Role`` den Wert ``PROT`` hat. Das gilt für TVS-Dioden, ESD-Schutzarrays, Varistoren und Gasableiter.
 <<<
 HERKUNFT: >>>
 Wunsch des Nutzers vom 27.11.2026, siehe ARCH-008. Der Feldname ist ein Vorschlag von Claude.
@@ -966,7 +966,7 @@ UID: RK-080
 STATUS: Abgestimmt
 TITLE: Feld am Stützkondensator
 STATEMENT: >>>
-Der Routing-Kern muss einen Kondensator als Stützkondensator behandeln, wenn sein Feld ``DR_Stuetzt`` das Bauteil und den Pin nennt, dessen Versorgung er stützt, zum Beispiel ``U3.7``. Die Angabe im Feld hat Vorrang vor der automatischen Erkennung nach RK-048.
+Der Routing-Kern muss einen Kondensator als Stützkondensator behandeln, wenn sein Feld ``DR_Decouples`` das Bauteil und den Pin nennt, dessen Versorgung er stützt, zum Beispiel ``U3.7``. Die Angabe im Feld hat Vorrang vor der automatischen Erkennung nach RK-048.
 <<<
 HERKUNFT: >>>
 Wunsch des Nutzers vom 27.11.2026. Der Feldname und die Schreibweise sind ein Vorschlag von Claude.

@@ -123,7 +123,7 @@ RATIONALE: >>>
 KiCad überträgt die Felder eines Symbols beim Abgleich von Schaltplan und Platine auf den Footprint. Der Nutzer kann ein Feld schon im Bibliothekssymbol setzen.
 <<<
 COMMENT: >>>
-[Claude] Zu prüfen: Liefert die IPC-API von KiCad 10 benutzerdefinierte Felder eines Footprints? Die Feldnamen ``DR_Rolle`` und ``DR_Stuetzt`` in RK-061 und RK-080 sind ein Vorschlag.
+[Claude] Zu prüfen: Liefert die IPC-API von KiCad 10 benutzerdefinierte Felder eines Footprints? Die Feldnamen ``DR_Role`` und ``DR_Decouples`` in RK-061 und RK-080 sind ein Vorschlag.
 <<<
 RELATIONS:
 - TYPE: Parent
