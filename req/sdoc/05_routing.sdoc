@@ -1,0 +1,147 @@
+[DOCUMENT]
+MID: fa384033bb48400b99ce1d8c3c248243
+TITLE: DiggerRouter: Routen und Auflösen
+UID: DR-SYS-RTE
+VERSION: @GIT_VERSION (Git-Branch: @GIT_BRANCH)
+DATE: @GIT_COMMIT_DATETIME
+PREFIX: RTE-
+OPTIONS:
+  ENABLE_MID: True
+  VIEW_STYLE: Table
+  NODE_IN_TOC: True
+
+[GRAMMAR]
+IMPORT_FROM_FILE: @diggerrouter
+
+[[SECTION]]
+MID: dfe3123fbb5e4c598c8730a6c66f9647
+TITLE: Routen
+
+[REQUIREMENT]
+MID: d0a357c8292e4ceeadb3e62089e6c768
+UID: RTE-001
+STATUS: Abgestimmt
+TITLE: Routen ergänzt nur
+STATEMENT: >>>
+Beim Routen eines Netzes muss das Plugin alle vorhandenen Leiterbahnen und Vias unverändert lassen und nur die fehlenden Verbindungen ergänzen.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-004
+
+[REQUIREMENT]
+MID: af8177b4009546f2a13d9e123d31b358
+UID: RTE-002
+STATUS: Abgestimmt
+TITLE: Teilweise geroutete Netze fertig routen
+STATEMENT: >>>
+Beim Routen eines teilweise gerouteten Netzes muss das Plugin die vorhandenen Leiterbahnen und Vias des Netzes als Teil der Verbindung nutzen.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-004
+
+[[/SECTION]]
+
+[[SECTION]]
+MID: a668da7515f94f179d9798d234d57ab0
+TITLE: Auflösen
+
+[REQUIREMENT]
+MID: aedbd5280bdf430396e9860c13a6a2f0
+UID: RTE-003
+STATUS: Abgestimmt
+TITLE: Auflösen löscht das gesamte Routing
+STATEMENT: >>>
+Beim Auflösen eines Netzes muss das Plugin alle Leiterbahnen und alle Vias des Netzes löschen.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-005
+
+[REQUIREMENT]
+MID: b178b0d8489d4b2bb60984fb11e0b159
+UID: RTE-004
+STATUS: Abgestimmt
+TITLE: Auflösen löscht auch manuelle und gesperrte Elemente
+STATEMENT: >>>
+Beim Auflösen eines Netzes muss das Plugin auch Leiterbahnen und Vias löschen, die der Nutzer von Hand verlegt hat oder die gesperrt (locked) sind.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-005
+
+[[/SECTION]]
+
+[[SECTION]]
+MID: 2d8c03e10ff54987a1f47c64603d6bab
+TITLE: Verbindungsstand
+
+[REQUIREMENT]
+MID: ce95d22a2c1d416aba6cac8c86fb132e
+UID: RTE-010
+STATUS: Abgestimmt
+TITLE: Endpunkte eines Netzes
+STATEMENT: >>>
+Das Plugin muss jedes Pad eines Netzes als Endpunkt zählen. Pads, die im Schaltplan als nicht verbunden markiert sind (No-Connect, X im Schaltplan), zählen nicht.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-006
+
+[REQUIREMENT]
+MID: 9b548570d3814f59960635c0edaa9a5a
+UID: RTE-011
+STATUS: Abgestimmt
+TITLE: Verbindung über Kupferflächen
+STATEMENT: >>>
+Das Plugin muss zwei Endpunkte als verbunden werten, wenn sie über Leiterbahnen, Vias oder eine Kupferfläche des Netzes elektrisch verbunden sind.
+<<<
+RATIONALE: >>>
+So stimmt der Verbindungsstand mit dem Ratsnest von KiCad überein.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-006
+
+[REQUIREMENT]
+MID: 6efa95e19f5c46df91e5b5a97db0d876
+UID: RTE-012
+STATUS: Abgestimmt
+TITLE: Zahl der verbundenen Endpunkte
+STATEMENT: >>>
+Das Plugin muss die Zahl ``x`` der verbundenen Endpunkte eines Netzes mit ``y``
+Endpunkten so bestimmen:
+
+- Ist kein Endpunkt mit einem anderen verbunden, gilt ``x = 0``.
+- Sonst gilt ``x = y - (k - 1)``. Dabei ist ``k`` die Zahl der Gruppen von
+  Endpunkten, die untereinander verbunden sind. Ein einzelner unverbundener
+  Endpunkt zählt als eigene Gruppe.
+
+Beispiele für ein Netz mit 4 Endpunkten: Sind 2 Endpunkte verbunden, gilt
+``2/4``. Sind 2 Paare jeweils verbunden, gilt ``3/4``. Sind alle verbunden,
+gilt ``4/4``.
+<<<
+RATIONALE: >>>
+Mit dieser Regel ist ein Netz genau dann vollständig, wenn ``x = y`` gilt. Jede ergänzte Verbindung erhöht ``x``.
+<<<
+COMMENT: >>>
+[Claude] Die Zählregel für teilweise verbundene Netze mit mehr als 3 Endpunkten ist eine Auslegung und mit dem Nutzer noch nicht geklärt.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-006
+
+[REQUIREMENT]
+MID: 7a10bb450f6341bdb9b20a141cbaa735
+UID: RTE-013
+STATUS: Abgestimmt
+TITLE: Routing-Stand eines Netzes
+STATEMENT: >>>
+Das Plugin muss ein Netz mit ``x = 0`` als ungeroutet, ein Netz mit ``0 < x < y`` als teilweise geroutet und ein Netz mit ``x = y`` als vollständig geroutet werten.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-006
+
+[[/SECTION]]

@@ -1,0 +1,85 @@
+[DOCUMENT]
+MID: 790ac511c40f42148a430e3aa6eb1404
+TITLE: DiggerRouter: Architektur
+UID: DR-SYS-ARCH
+VERSION: @GIT_VERSION (Git-Branch: @GIT_BRANCH)
+DATE: @GIT_COMMIT_DATETIME
+PREFIX: ARCH-
+OPTIONS:
+  ENABLE_MID: True
+  VIEW_STYLE: Table
+  NODE_IN_TOC: True
+
+[GRAMMAR]
+IMPORT_FROM_FILE: @diggerrouter
+
+[REQUIREMENT]
+MID: f4897cb281c442b2a867cd0a329de702
+UID: ARCH-001
+STATUS: Abgestimmt
+TITLE: Anbindung über die IPC-API
+STATEMENT: >>>
+Das Plugin muss über die IPC-API von KiCad mit dem Python-Paket ``kicad-python`` auf die Platine zugreifen.
+<<<
+RATIONALE: >>>
+Die SWIG-Schnittstelle ``pcbnew`` ist veraltet und entfällt mit KiCad 11.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-001
+
+[REQUIREMENT]
+MID: 800bacf6dd094d59acc80367567034a7
+UID: ARCH-002
+STATUS: Abgestimmt
+TITLE: Plugin in Python
+STATEMENT: >>>
+Der Teil des Plugins, der mit KiCad spricht und die Bedienoberfläche zeigt, muss in Python geschrieben sein.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-001
+
+[REQUIREMENT]
+MID: da21bbf77afc421fae817b65c7c2f616
+UID: ARCH-003
+STATUS: Abgestimmt
+TITLE: Routing-Kern in Rust
+STATEMENT: >>>
+Das Plugin muss die Leiterbahnen in einem Routing-Kern berechnen, der in Rust geschrieben ist.
+<<<
+RATIONALE: >>>
+Die Wegsuche ist rechenintensiv. Rust bietet dafür die nötige Geschwindigkeit.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-001
+
+[REQUIREMENT]
+MID: 2cee74dd30d2488e92723ff9267a4fe4
+UID: ARCH-004
+STATUS: Abgestimmt
+TITLE: Umfang des Routings
+STATEMENT: >>>
+Das Plugin muss ein einzelnes Netz, eine Auswahl von Netzen und alle Netze der Platine routen können.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-002
+
+[REQUIREMENT]
+MID: 21cd9107710a409fac1392f85c2f9397
+UID: ARCH-005
+STATUS: Abgestimmt
+TITLE: Eigener Prozess bleibt unsichtbar
+STATEMENT: >>>
+Das Plugin muss sich aus KiCad heraus starten lassen, ohne dass der Nutzer ein weiteres Programm von Hand starten muss.
+<<<
+RATIONALE: >>>
+Plugins der IPC-API laufen technisch als eigener Prozess. Der Nutzer soll davon nichts merken.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-001
+- TYPE: Parent
+  VALUE: UR-008

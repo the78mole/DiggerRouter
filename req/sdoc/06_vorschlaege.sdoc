@@ -1,0 +1,122 @@
+[DOCUMENT]
+MID: 677e80a7936f4e7b9af3b0ab0d0c3360
+TITLE: DiggerRouter: Vorschläge
+UID: DR-SYS-VOR
+VERSION: @GIT_VERSION (Git-Branch: @GIT_BRANCH)
+DATE: @GIT_COMMIT_DATETIME
+PREFIX: VOR-
+OPTIONS:
+  ENABLE_MID: True
+  VIEW_STYLE: Table
+  NODE_IN_TOC: True
+
+[GRAMMAR]
+IMPORT_FROM_FILE: @diggerrouter
+
+[TEXT]
+MID: 02e5f034f0344e858e859454a1bd5d2b
+STATEMENT: >>>
+Die Anforderungen in diesem Dokument sind Vorschläge von Claude. Der Nutzer hat sie noch nicht bestätigt. Eine bestätigte Anforderung erhält den Status ``Abgestimmt``.
+<<<
+
+[REQUIREMENT]
+MID: c31fede7e61944f482a6e091298bbb58
+UID: VOR-001
+STATUS: Vorschlag
+TITLE: Design Rules einhalten
+STATEMENT: >>>
+Das Plugin muss beim Routen die Design Rules der Platine und der Netzklassen einhalten: Abstände, Leiterbahnbreiten und Via-Größen.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-009
+
+[REQUIREMENT]
+MID: efabffff8e2c40b9bc3019ecbab6cb13
+UID: VOR-002
+STATUS: Vorschlag
+TITLE: Ein Undo-Schritt je Aktion
+STATEMENT: >>>
+Das Plugin muss jede Aktion "routen" oder "auflösen" so ausführen, dass der Nutzer sie im PCB-Editor mit einem einzigen Undo-Schritt rückgängig machen kann.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-010
+
+[REQUIREMENT]
+MID: a3da519c7c7e442792d837c193a8dec7
+UID: VOR-003
+STATUS: Vorschlag
+TITLE: Routing abbrechen
+STATEMENT: >>>
+Der Nutzer muss ein laufendes Routing abbrechen können. Nach dem Abbruch muss die Platine nur vollständig verlegte Leiterbahnen enthalten.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-008
+
+[REQUIREMENT]
+MID: c55bf87b6b5d4a7ab89cc4370a075a60
+UID: VOR-004
+STATUS: Vorschlag
+TITLE: Bedienbarkeit während des Routings
+STATEMENT: >>>
+Das Signallisten-Fenster muss während eines laufenden Routings bedienbar bleiben und zeigen, welches Netz das Plugin gerade routet.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-008
+
+[REQUIREMENT]
+MID: 05fb2ef8762749d0827b3d56ec6d4dc1
+UID: VOR-005
+STATUS: Vorschlag
+TITLE: Meldung bei unvollständigem Routing
+STATEMENT: >>>
+Kann das Plugin ein Netz nicht vollständig routen, muss es die verlegten Teile behalten und dem Nutzer melden, welche Netze unvollständig sind.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-011
+
+[REQUIREMENT]
+MID: fce7595abe0a47a4955d472c0670a2c4
+UID: VOR-006
+STATUS: Vorschlag
+TITLE: Meldung ohne ausgewähltes Netz
+STATEMENT: >>>
+Ist beim Klick auf den Knopf aus [LINK: PCB-001] kein Netz ausgewählt, muss das Plugin dies dem Nutzer melden und die Platine unverändert lassen.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-011
+
+[REQUIREMENT]
+MID: c1b50f709d7848f485c444ed63d008ee
+UID: VOR-007
+STATUS: Vorschlag
+TITLE: Rückfrage vor dem Löschen gesperrter Elemente
+STATEMENT: >>>
+Betrifft "auflösen" gesperrte Leiterbahnen oder Vias, muss das Plugin vor dem Löschen eine Bestätigung des Nutzers einholen.
+<<<
+RATIONALE: >>>
+Der Nutzer sperrt Elemente, um sie vor versehentlichen Änderungen zu schützen.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-005
+
+[REQUIREMENT]
+MID: 30031ef7959d44f5b97df121389ae0d2
+UID: VOR-008
+STATUS: Vorschlag
+TITLE: Unterstützte KiCad-Version
+STATEMENT: >>>
+Das Plugin muss mit KiCad ab Version 9 arbeiten.
+<<<
+RATIONALE: >>>
+Die IPC-API gibt es seit KiCad 9.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-001

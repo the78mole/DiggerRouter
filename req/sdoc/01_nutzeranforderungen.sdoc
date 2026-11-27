@@ -1,0 +1,197 @@
+[DOCUMENT]
+MID: 2062caf2a44448feb4bb0654041e9ecd
+TITLE: DiggerRouter: Nutzeranforderungen
+UID: DR-NUTZER
+VERSION: @GIT_VERSION (Git-Branch: @GIT_BRANCH)
+DATE: @GIT_COMMIT_DATETIME
+PREFIX: UR-
+OPTIONS:
+  ENABLE_MID: True
+  VIEW_STYLE: Table
+  NODE_IN_TOC: True
+
+[GRAMMAR]
+IMPORT_FROM_FILE: @diggerrouter
+
+[[SECTION]]
+MID: d688c45c1e1d4ee0bfdace0e6337d4b6
+TITLE: Einleitung
+
+[TEXT]
+MID: 3e35a967f2434032a3ef2f9b9fd5f07c
+STATEMENT: >>>
+DiggerRouter ist ein Plugin für KiCad. Es routet Leiterbahnen direkt im
+PCB-Editor: für das im Schaltplan ausgewählte Signal, für eine Auswahl von
+Signalen oder für alle Signale.
+
+Dieses Dokument beschreibt, was der Nutzer mit dem Plugin erreichen will. Die
+Systemanforderungen leiten daraus das Verhalten des Plugins ab. Sie stehen in
+einem Dokument je Themengebiet:
+
+- [LINK: DR-SYS-ARCH]
+- [LINK: DR-SYS-PCB]
+- [LINK: DR-SYS-SIG]
+- [LINK: DR-SYS-RTE]
+- [LINK: DR-SYS-VOR]
+
+Jede Systemanforderung verweist auf die Nutzeranforderung, aus der sie folgt.
+
+Die Begriffe "Signal" und "Netz" bezeichnen in allen Dokumenten dasselbe: ein
+Netz der Platine in KiCad.
+
+Das Feld STATUS zeigt den Stand einer Anforderung:
+
+- ``Vorschlag``: von Claude ergänzt, vom Nutzer noch nicht bestätigt.
+- ``Abgestimmt``: mit dem Nutzer geklärt.
+- ``Umgesetzt``: im Code umgesetzt.
+- ``Verifiziert``: durch einen Test oder eine Prüfung nachgewiesen.
+<<<
+
+[[/SECTION]]
+
+[[SECTION]]
+MID: 244960822ab04e739256ad1feee6a6a6
+TITLE: Routing in KiCad
+
+[REQUIREMENT]
+MID: bbd0946542454d8694f5b725f39d022a
+UID: UR-001
+STATUS: Abgestimmt
+TITLE: Routing ohne Werkzeugwechsel
+STATEMENT: >>>
+Der Nutzer muss Netze routen können, ohne KiCad zu verlassen und ohne die Platine zu exportieren oder zu importieren.
+<<<
+RATIONALE: >>>
+Externe Autorouter brauchen einen Export und einen Import der Platine. Dieser Umweg kostet Zeit und trennt das Routing vom restlichen Entwurf.
+<<<
+
+[REQUIREMENT]
+MID: e01ad2fdd2c54eca8bd040b3c24950ec
+UID: UR-002
+STATUS: Abgestimmt
+TITLE: Umfang des Routings wählen
+STATEMENT: >>>
+Der Nutzer muss wählen können, ob das Plugin ein einzelnes Netz, eine Auswahl von Netzen oder alle Netze routet.
+<<<
+
+[REQUIREMENT]
+MID: 1cd690fbe730468ca043792274bc8960
+UID: UR-003
+STATUS: Abgestimmt
+TITLE: Netz aus dem Schaltplan routen
+STATEMENT: >>>
+Der Nutzer muss ein Netz im Schaltplan auswählen und es danach mit einem Klick im PCB-Editor routen können.
+<<<
+RATIONALE: >>>
+Der Nutzer denkt in Signalen des Schaltplans. Er soll das Netz nicht ein zweites Mal im PCB-Editor suchen müssen.
+<<<
+
+[REQUIREMENT]
+MID: 3006581bed3f45c68d558f683ddfd079
+UID: UR-004
+STATUS: Abgestimmt
+TITLE: Vorhandene Leiterbahnen behalten
+STATEMENT: >>>
+Der Nutzer muss sich darauf verlassen können, dass das Routing bereits verlegte Leiterbahnen und Vias nicht verändert.
+<<<
+RATIONALE: >>>
+Kritische Signale verlegt der Nutzer von Hand. Diese Arbeit darf das Plugin nicht zerstören.
+<<<
+
+[REQUIREMENT]
+MID: 8ab32f62d80446de921281464e6a3c16
+UID: UR-005
+STATUS: Abgestimmt
+TITLE: Routing eines Netzes auflösen
+STATEMENT: >>>
+Der Nutzer muss das gesamte Routing eines Netzes mit einem Klick entfernen können.
+<<<
+RATIONALE: >>>
+So kann der Nutzer ein Netz schnell neu routen lassen oder Platz für andere Netze schaffen.
+<<<
+
+[[/SECTION]]
+
+[[SECTION]]
+MID: 9a7586be93bd4aa5908e62bdecc2b49c
+TITLE: Überblick und Bedienung
+
+[REQUIREMENT]
+MID: 3c57ed64f5d7490cbad7a62a5d78dea7
+UID: UR-006
+STATUS: Abgestimmt
+TITLE: Überblick über den Routing-Stand
+STATEMENT: >>>
+Der Nutzer muss für alle Netze der Platine auf einen Blick sehen können, wie weit jedes Netz geroutet ist.
+<<<
+
+[REQUIREMENT]
+MID: e1aea4aeb30443128a09fef343b6023b
+UID: UR-007
+STATUS: Abgestimmt
+TITLE: Güte des Routings beurteilen
+STATEMENT: >>>
+Der Nutzer muss für jedes Netz die geroutete Länge mit der kürzesten möglichen Länge vergleichen können.
+<<<
+RATIONALE: >>>
+Der Vergleich zeigt Umwege im Routing eines Netzes.
+<<<
+
+[REQUIREMENT]
+MID: d842eb2048594c3893ff2e9752ec1600
+UID: UR-008
+STATUS: Abgestimmt
+TITLE: Parallel weiterarbeiten
+STATEMENT: >>>
+Der Nutzer muss im PCB-Editor weiterarbeiten können, während der Überblick über die Netze sichtbar bleibt.
+<<<
+RATIONALE: >>>
+Der Nutzer kennt dieses Verhalten vom DRC-Fenster in KiCad.
+<<<
+
+[[/SECTION]]
+
+[[SECTION]]
+MID: b4bc0726522046a1a9b6ad6c90a6cc4b
+TITLE: Vorschläge
+
+[TEXT]
+MID: 4511ff6606e645ef8bdbf145c5b99972
+STATEMENT: >>>
+Die Anforderungen in diesem Abschnitt sind Vorschläge von Claude. Der Nutzer hat sie noch nicht bestätigt.
+<<<
+
+[REQUIREMENT]
+MID: 32ae6fdf99f54f5e832a47e7f8e96f5d
+UID: UR-009
+STATUS: Vorschlag
+TITLE: Regelkonformes Ergebnis
+STATEMENT: >>>
+Der Nutzer muss sich darauf verlassen können, dass vom Plugin verlegte Leiterbahnen und Vias die Design Rules der Platine einhalten.
+<<<
+RATIONALE: >>>
+Ein Routing mit DRC-Fehlern muss der Nutzer von Hand nacharbeiten.
+<<<
+
+[REQUIREMENT]
+MID: ed7db7eda77348beb9075db6134702d1
+UID: UR-010
+STATUS: Vorschlag
+TITLE: Aktionen rückgängig machen
+STATEMENT: >>>
+Der Nutzer muss jede Aktion des Plugins im PCB-Editor rückgängig machen können.
+<<<
+RATIONALE: >>>
+Das gilt besonders für "auflösen", das auch von Hand verlegte und gesperrte Leiterbahnen löscht.
+<<<
+
+[REQUIREMENT]
+MID: 5583d1a4b3b444abaf4563f5ac8b5491
+UID: UR-011
+STATUS: Vorschlag
+TITLE: Rückmeldung bei Problemen
+STATEMENT: >>>
+Der Nutzer muss erfahren, wenn das Plugin eine Aktion nicht oder nur teilweise ausführen konnte.
+<<<
+
+[[/SECTION]]

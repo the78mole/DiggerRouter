@@ -1,0 +1,2 @@
+# StrictDoc aus dem Fork mit dem Feature STATIC_EDITING.
+strictdoc @ git+https://github.com/the78mole/strictdoc@feature/static-editing

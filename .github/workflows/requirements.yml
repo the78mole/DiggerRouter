@@ -1,0 +1,35 @@
+name: Anforderungen
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "req/**"
+      - "strictdoc_config.py"
+      - ".github/workflows/requirements.yml"
+  pull_request:
+    paths:
+      - "req/**"
+      - "strictdoc_config.py"
+      - ".github/workflows/requirements.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    name: StrictDoc-Export
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - name: StrictDoc installieren
+        run: pip install -r req/requirements.txt
+      - name: HTML exportieren
+        run: strictdoc export . --output-dir output
+      - uses: actions/upload-artifact@v7
+        with:
+          name: anforderungen-html
+          path: output/html

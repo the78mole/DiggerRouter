@@ -1,0 +1,339 @@
+[DOCUMENT]
+MID: fd445a7d90ae4cdf9a386ab44784674f
+TITLE: DiggerRouter: Signallisten-Fenster
+UID: DR-SYS-SIG
+VERSION: @GIT_VERSION (Git-Branch: @GIT_BRANCH)
+DATE: @GIT_COMMIT_DATETIME
+PREFIX: SIG-
+OPTIONS:
+  ENABLE_MID: True
+  VIEW_STYLE: Table
+  NODE_IN_TOC: True
+
+[GRAMMAR]
+IMPORT_FROM_FILE: @diggerrouter
+
+[[SECTION]]
+MID: ccf7cb396f774d49a9ca11b58ae272b5
+TITLE: Verhalten des Fensters
+
+[TEXT]
+MID: 18e1f45fecde4feaa725dce80d6f25ec
+STATEMENT: >>>
+Das Fenster verhält sich wie das DRC-Fenster von KiCad.
+<<<
+
+[REQUIREMENT]
+MID: 10b36cb18dbf4f16966614600d40e5c1
+UID: SIG-001
+STATUS: Abgestimmt
+TITLE: Nicht-modales Fenster
+STATEMENT: >>>
+Das Signallisten-Fenster muss nicht-modal sein. Der PCB-Editor muss bedienbar bleiben, solange das Fenster offen ist.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-008
+
+[REQUIREMENT]
+MID: b296a30855b84beeae1c8d9e3ed1a424
+UID: SIG-002
+STATUS: Abgestimmt
+TITLE: Fenster bleibt offen
+STATEMENT: >>>
+Das Signallisten-Fenster muss offen bleiben, bis der Nutzer es schließt. Es darf sich nach "routen" oder "auflösen" nicht von selbst schließen.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-008
+
+[REQUIREMENT]
+MID: c4928af8f7774094ab08ed4a4d0afe7e
+UID: SIG-003
+STATUS: Abgestimmt
+TITLE: Frei verschiebbar
+STATEMENT: >>>
+Der Nutzer muss das Signallisten-Fenster frei verschieben können, auch auf einen anderen Bildschirm.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-008
+
+[REQUIREMENT]
+MID: a03ac20179fa44fbac106aadeeb9c3e5
+UID: SIG-004
+STATUS: Abgestimmt
+TITLE: Laufende Aktualisierung
+STATEMENT: >>>
+Das Signallisten-Fenster muss Änderungen an der Platine ohne Zutun des Nutzers anzeigen. Das gilt für Änderungen durch das Plugin und für Änderungen, die der Nutzer im PCB-Editor vornimmt.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-006
+- TYPE: Parent
+  VALUE: UR-008
+
+[[/SECTION]]
+
+[[SECTION]]
+MID: 897400b9d64348b791e74fbf681c0d72
+TITLE: Inhalt der Liste
+
+[REQUIREMENT]
+MID: 8af4eb4ebbf14a5c8b851074410376b5
+UID: SIG-010
+STATUS: Abgestimmt
+TITLE: Eine Zeile je Netz
+STATEMENT: >>>
+Das Signallisten-Fenster muss jedes Netz der Platine, das mindestens einen Endpunkt nach [LINK: RTE-010] hat, in einer eigenen Zeile zeigen.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-006
+
+[REQUIREMENT]
+MID: 27daa363e2164e2481807f8e80d17be3
+UID: SIG-011
+STATUS: Abgestimmt
+TITLE: Netze mit nur einem Endpunkt
+STATEMENT: >>>
+Das Signallisten-Fenster muss ein Netz mit nur einem Endpunkt ausgegraut zeigen.
+<<<
+RATIONALE: >>>
+Ein solches Netz lässt sich nicht routen. Es bleibt sichtbar, weil es auf einen Fehler im Schaltplan hinweisen kann.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-006
+
+[REQUIREMENT]
+MID: 2f1a3443c94b46f7b82fadd4274e04ca
+UID: SIG-012
+STATUS: Abgestimmt
+TITLE: Häkchen
+STATEMENT: >>>
+Jede Zeile muss ein Häkchen enthalten, mit dem der Nutzer das Netz markiert.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-002
+
+[REQUIREMENT]
+MID: 108880a8a7e446efb492b1ffff16f31c
+UID: SIG-013
+STATUS: Abgestimmt
+TITLE: Name
+STATEMENT: >>>
+Jede Zeile muss den Namen des Netzes zeigen.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-006
+
+[REQUIREMENT]
+MID: 416501fb50504e66a96b0b6417075a82
+UID: SIG-014
+STATUS: Abgestimmt
+TITLE: Verbundene Endpunkte
+STATEMENT: >>>
+Jede Zeile muss die Zahl der verbundenen Endpunkte in der Form ``x/y`` zeigen.
+
+``y`` ist die Zahl der Endpunkte des Netzes nach [LINK: RTE-010]. Ein Netz von einem
+Ausgang zu einem Eingang hat 2 Endpunkte. Ein Netz von einem Ausgang zu zwei
+Eingängen hat 3 Endpunkte.
+
+``x`` ist nach [LINK: RTE-012] bestimmt.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-006
+
+[REQUIREMENT]
+MID: e1f8c00d88f64e6aa61f550fb6dbc4b3
+UID: SIG-015
+STATUS: Abgestimmt
+TITLE: Fortschrittsbalken
+STATEMENT: >>>
+Jede Zeile muss einen kleinen Fortschrittsbalken zeigen, der von links nach rechts wächst und den Anteil ``x`` von ``y`` aus [LINK: SIG-014] füllt.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-006
+
+[REQUIREMENT]
+MID: ed8a3056917d4394b3c1b4487c2b4013
+UID: SIG-016
+STATUS: Abgestimmt
+TITLE: Beschriftung des Fortschrittsbalkens
+STATEMENT: >>>
+Der Fortschrittsbalken muss mit ``x/y`` beschriftet sein und nicht mit einem Prozentwert.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-006
+
+[REQUIREMENT]
+MID: 8a514f75e47c4fab8d04824e69dbf48c
+UID: SIG-017
+STATUS: Abgestimmt
+TITLE: Farben aus KiCad
+STATEMENT: >>>
+Der Fortschrittsbalken muss die Farben des Farbschemas verwenden, das in KiCad eingestellt ist.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-006
+
+[REQUIREMENT]
+MID: 11600b23bfa54b1f8f87b454d25fc6af
+UID: SIG-018
+STATUS: Abgestimmt
+TITLE: Hervorhebung nach Routing-Stand
+STATEMENT: >>>
+Das Signallisten-Fenster muss ungeroutete, teilweise geroutete und vollständig geroutete Netze so hervorheben, dass der Nutzer die drei Zustände unterscheiden kann.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-006
+
+[REQUIREMENT]
+MID: ab4121b2628b4ecfa16d642a368c8271
+UID: SIG-019
+STATUS: Abgestimmt
+TITLE: Minimale Länge
+STATEMENT: >>>
+Jede Zeile muss die minimale Länge des Netzes zeigen. Die minimale Länge ist die Länge des minimalen Spannbaums über die Luftlinien zwischen den Endpunkten des Netzes.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-007
+
+[REQUIREMENT]
+MID: e0ce5fab5f0a4d3a9d9b07cfb0d61ff0
+UID: SIG-020
+STATUS: Abgestimmt
+TITLE: Geroutete Länge
+STATEMENT: >>>
+Jede Zeile muss die geroutete Länge des Netzes zeigen. Die geroutete Länge ist die Summe der Längen aller Leiterbahnen des Netzes. Für ein ungeroutetes Netz ist sie 0.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-007
+
+[REQUIREMENT]
+MID: ba8723687dfe48508a4cdba72087d8b9
+UID: SIG-021
+STATUS: Abgestimmt
+TITLE: Knopf "routen" je Zeile
+STATEMENT: >>>
+Jede Zeile muss einen Knopf "routen" enthalten, der das Netz nach [LINK: RTE-001] routet. Der Knopf routet ein ungeroutetes Netz neu und ein teilweise geroutetes Netz fertig.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-002
+
+[REQUIREMENT]
+MID: e1d7b83a170243dba96e3b1572fa66f4
+UID: SIG-022
+STATUS: Abgestimmt
+TITLE: Knopf "auflösen" je Zeile
+STATEMENT: >>>
+Jede Zeile muss einen Knopf "auflösen" enthalten, der das Routing des Netzes nach [LINK: RTE-003] entfernt.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-005
+
+[[/SECTION]]
+
+[[SECTION]]
+MID: 8a0b6ba4d865459d934e9433ba32f92f
+TITLE: Sortieren, Suchen und Markieren
+
+[REQUIREMENT]
+MID: d01303ef46e14a6ea699352d77a5632a
+UID: SIG-030
+STATUS: Abgestimmt
+TITLE: Sortieren nach Name
+STATEMENT: >>>
+Der Nutzer muss die Liste nach dem Namen der Netze sortieren können.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-006
+
+[REQUIREMENT]
+MID: d3c5915f052d49ab8a2add2db30dada2
+UID: SIG-031
+STATUS: Abgestimmt
+TITLE: Sortieren nach Vollständigkeit
+STATEMENT: >>>
+Der Nutzer muss die Liste nach der Vollständigkeit des Routings sortieren können.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-006
+
+[REQUIREMENT]
+MID: 2ca680bdd90e4239b3442e77aac523cc
+UID: SIG-032
+STATUS: Abgestimmt
+TITLE: Suchfeld
+STATEMENT: >>>
+Das Signallisten-Fenster muss ein Suchfeld enthalten, das die Liste auf die Netze einschränkt, deren Name den eingegebenen Text enthält.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-006
+
+[REQUIREMENT]
+MID: 1eef028ea07c444bad65bbb315cbb075
+UID: SIG-033
+STATUS: Abgestimmt
+TITLE: Knopf "alle auswählen"
+STATEMENT: >>>
+Das Signallisten-Fenster muss einen Knopf enthalten, der alle Netze markiert.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-002
+
+[REQUIREMENT]
+MID: 8c33d4b2c4534b779dfe4f92cdd3f759
+UID: SIG-034
+STATUS: Abgestimmt
+TITLE: Knopf "keine auswählen"
+STATEMENT: >>>
+Das Signallisten-Fenster muss einen Knopf enthalten, der die Markierung aller Netze aufhebt.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-002
+
+[REQUIREMENT]
+MID: 98a056fd43f347b7942ce7d00f5b3429
+UID: SIG-035
+STATUS: Abgestimmt
+TITLE: Markierte Netze routen
+STATEMENT: >>>
+Das Signallisten-Fenster muss einen Knopf "routen" enthalten, der alle markierten Netze nach [LINK: RTE-001] routet.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-002
+
+[REQUIREMENT]
+MID: d5af836c3fc6461d826bcc532bdacabf
+UID: SIG-036
+STATUS: Abgestimmt
+TITLE: Markierte Netze auflösen
+STATEMENT: >>>
+Das Signallisten-Fenster muss einen Knopf "auflösen" enthalten, der das Routing aller markierten Netze nach [LINK: RTE-003] entfernt.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-002
+- TYPE: Parent
+  VALUE: UR-005
+
+[[/SECTION]]
