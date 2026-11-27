@@ -107,7 +107,7 @@ RELATIONS:
 [REQUIREMENT]
 MID: 6efa95e19f5c46df91e5b5a97db0d876
 UID: RTE-012
-STATUS: Vorschlag
+STATUS: Abgestimmt
 TITLE: Zahl der verbundenen Endpunkte
 STATEMENT: >>>
 Das Plugin muss die Zahl ``x`` der verbundenen Endpunkte eines Netzes mit ``y``
@@ -121,6 +121,8 @@ Endpunkten so bestimmen:
 Beispiele für ein Netz mit 4 Endpunkten: Sind 2 Endpunkte verbunden, gilt
 ``2/4``. Sind 2 Paare jeweils verbunden, gilt ``3/4``. Sind alle verbunden,
 gilt ``4/4``.
+
+Der Zustand x = 1 kann somit nur auftreten, wenn eine unfertige Leiterbahn an einen Endpunkt angeschlossen ist oder der Nutzer gerade manuell das Netz routet.
 <<<
 RATIONALE: >>>
 Mit dieser Regel ist ein Netz genau dann vollständig, wenn ``x = y`` gilt. Jede ergänzte Verbindung erhöht ``x``.

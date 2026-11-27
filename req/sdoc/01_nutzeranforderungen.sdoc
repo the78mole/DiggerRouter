@@ -97,6 +97,9 @@ Der Nutzer muss sich darauf verlassen können, dass das Routing bereits verlegte
 RATIONALE: >>>
 Kritische Signale verlegt der Nutzer von Hand. Diese Arbeit darf das Plugin nicht zerstören.
 <<<
+COMMENT: >>>
+[the78mole] Der Nutzer soll wählen können, wie tief der Eingriff sein darf: Kein Eingriff, andere Signale schieben, andere Signale auflösen, die im Weg sind.
+<<<
 
 [REQUIREMENT]
 MID: 8ab32f62d80446de921281464e6a3c16
@@ -108,6 +111,18 @@ Der Nutzer muss das gesamte Routing eines Netzes mit einem Klick entfernen könn
 <<<
 RATIONALE: >>>
 So kann der Nutzer ein Netz schnell neu routen lassen oder Platz für andere Netze schaffen.
+<<<
+
+[REQUIREMENT]
+MID: a7ba50aaf6064d5b94b0599fade173c1
+UID: UR-012
+STATUS: Vorschlag
+TITLE: Lagenverfügbarkeit für Auto-Routing auswählen
+STATEMENT: >>>
+Der Nutzer soll die Möglichkeit haben, das Routing für die ausgewählten Netze auf bestimmte Lagen zu beschränken. Dabei soll es die Möglichkeit geben, bestimmt Layer zu bevorzugen, auf einzelnen Layern vorzugsrichtungen festzulegen, Layer vom Routing möglichst auszunehmen und Layer komplett auszuschließen.
+<<<
+RATIONALE: >>>
+Der Nutzer legt einige Layer bereits für die Versorgungsspannung fest, um eine möglichst niederohmige Anbindung zu gewährleisten und die EMV zu optimieren. Generell ist Signalrouting dort möglich, aber es verschlechtert beide Zielgrößen dieser speziellen Lagen und ist nach Möglichkeit zu vermeiden. Auch gibt es Lagen, die für bestimmte Signalklassen (z.B. High-Speed oder RF) genutzt werden und möglichst wenig
 <<<
 
 [[/SECTION]]
@@ -143,7 +158,7 @@ UID: UR-008
 STATUS: Abgestimmt
 TITLE: Parallel weiterarbeiten
 STATEMENT: >>>
-Der Nutzer muss im PCB-Editor weiterarbeiten können, während der Überblick über die Netze sichtbar bleibt.
+Der Nutzer muss im PCB-Editor weiterarbeiten können, während der Überblick über die Netze sichtbar bleibt. Während der Nutzer manuell routet, sollen die Informationen aktualisiert werden, sobald der Nutzer die Leiterbahn pinnt, also einen Zwischenschritt mit der Maustaste festlegt,
 <<<
 RATIONALE: >>>
 Der Nutzer kennt dieses Verhalten vom DRC-Fenster in KiCad.
@@ -164,7 +179,7 @@ Die Anforderungen in diesem Abschnitt sind Vorschläge von Claude. Der Nutzer ha
 [REQUIREMENT]
 MID: 32ae6fdf99f54f5e832a47e7f8e96f5d
 UID: UR-009
-STATUS: Vorschlag
+STATUS: Abgestimmt
 TITLE: Regelkonformes Ergebnis
 STATEMENT: >>>
 Der Nutzer muss sich darauf verlassen können, dass vom Plugin verlegte Leiterbahnen und Vias die Design Rules der Platine einhalten.
@@ -176,7 +191,7 @@ Ein Routing mit DRC-Fehlern muss der Nutzer von Hand nacharbeiten.
 [REQUIREMENT]
 MID: ed7db7eda77348beb9075db6134702d1
 UID: UR-010
-STATUS: Vorschlag
+STATUS: Abgestimmt
 TITLE: Aktionen rückgängig machen
 STATEMENT: >>>
 Der Nutzer muss jede Aktion des Plugins im PCB-Editor rückgängig machen können.
@@ -188,7 +203,7 @@ Das gilt besonders für "auflösen", das auch von Hand verlegte und gesperrte Le
 [REQUIREMENT]
 MID: 5583d1a4b3b444abaf4563f5ac8b5491
 UID: UR-011
-STATUS: Vorschlag
+STATUS: Abgestimmt
 TITLE: Rückmeldung bei Problemen
 STATEMENT: >>>
 Der Nutzer muss erfahren, wenn das Plugin eine Aktion nicht oder nur teilweise ausführen konnte.
