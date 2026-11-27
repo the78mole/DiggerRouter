@@ -1,0 +1,10 @@
+# StrictDoc-Export und Cache
+/output/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# Rust
+/target/
