@@ -858,16 +858,13 @@ RELATIONS:
 [REQUIREMENT]
 MID: 9f6067c728b64c949738b3682069cdfe
 UID: RK-061
-STATUS: Vorschlag
+STATUS: Abgestimmt
 TITLE: Schutzbauteile erkennen
 STATEMENT: >>>
-Der Routing-Kern muss Schutzbauteile an einem Netz erkennen. Dazu gehören TVS-Dioden, ESD-Schutzarrays, Varistoren und Gasableiter.
+Der Routing-Kern muss ein Bauteil als Schutzbauteil behandeln, wenn sein Feld ``DR_Rolle`` den Wert ``Schutz`` hat. Das gilt für TVS-Dioden, ESD-Schutzarrays, Varistoren und Gasableiter.
 <<<
 HERKUNFT: >>>
-Abgeleitet aus RK-060, nicht aus Freerouting.
-<<<
-COMMENT: >>>
-[Claude] Offene Frage: Woran soll das Plugin ein Schutzbauteil erkennen? Möglich sind das Symbol aus der KiCad-Bibliothek, ein Feld am Bauteil oder eine Markierung durch den Nutzer in der Signalliste.
+Wunsch des Nutzers vom 27.11.2026, siehe ARCH-008. Der Feldname ist ein Vorschlag von Claude.
 <<<
 RELATIONS:
 - TYPE: Parent
@@ -956,6 +953,162 @@ Abgeleitet aus RK-060, nicht aus Freerouting.
 RELATIONS:
 - TYPE: Parent
   VALUE: UR-019
+
+[[/SECTION]]
+
+[[SECTION]]
+MID: 1425b9f6032b455b8c6e8530ee2483af
+TITLE: Stützkondensatoren und Kaskaden
+
+[REQUIREMENT]
+MID: 6e9db0f1482a44b6929ec77f06ef0a8b
+UID: RK-080
+STATUS: Abgestimmt
+TITLE: Feld am Stützkondensator
+STATEMENT: >>>
+Der Routing-Kern muss einen Kondensator als Stützkondensator behandeln, wenn sein Feld ``DR_Stuetzt`` das Bauteil und den Pin nennt, dessen Versorgung er stützt, zum Beispiel ``U3.7``. Die Angabe im Feld hat Vorrang vor der automatischen Erkennung nach RK-048.
+<<<
+HERKUNFT: >>>
+Wunsch des Nutzers vom 27.11.2026. Der Feldname und die Schreibweise sind ein Vorschlag von Claude.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-017
+
+[REQUIREMENT]
+MID: 060a9790d21448f38bb3ad0b20cf3115
+UID: RK-081
+STATUS: Vorschlag
+TITLE: Mehrere gestützte Pins
+STATEMENT: >>>
+Das Feld muss mehrere Ziele aufnehmen können, getrennt durch Komma, zum Beispiel ``U3.7, U3.12``. Nennt das Feld nur ein Bauteil ohne Pin, gilt der Kondensator für alle Pins dieses Bauteils am selben Netz.
+<<<
+RATIONALE: >>>
+Ein großer Kondensator stützt oft mehrere Versorgungspins oder den ganzen Baustein.
+<<<
+HERKUNFT: >>>
+Vorschlag von Claude zur Frage des Nutzers nach Kaskaden vom 27.11.2026. Nicht aus Freerouting.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-017
+
+[REQUIREMENT]
+MID: 2dd7a3ac8fc440c8b9fb7510a131fdc4
+UID: RK-082
+STATUS: Vorschlag
+TITLE: Kaskade erkennen
+STATEMENT: >>>
+Der Routing-Kern muss alle Stützkondensatoren, die denselben Pin nennen, als eine Kaskade behandeln.
+<<<
+RATIONALE: >>>
+Der Nutzer muss die Kaskade so nicht eigens beschreiben. Jeder Kondensator trägt dieselbe Angabe.
+<<<
+HERKUNFT: >>>
+Vorschlag von Claude zur Frage des Nutzers nach Kaskaden vom 27.11.2026. Nicht aus Freerouting.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-017
+
+[REQUIREMENT]
+MID: 179648f74c724e7f993a885a71f1cff7
+UID: RK-083
+STATUS: Vorschlag
+TITLE: Rang in der Kaskade
+STATEMENT: >>>
+Der Routing-Kern muss die Kondensatoren einer Kaskade nach ihrer Kapazität ordnen. Der kleinste Wert hat Rang 1. Die Kapazität liest er aus dem Feld Wert. Der Nutzer muss den Rang im Feld selbst vorgeben können, zum Beispiel ``U3.7#2``. Diese Angabe hat Vorrang.
+<<<
+RATIONALE: >>>
+Der kleinste Kondensator wirkt bei den höchsten Frequenzen und verträgt die geringste Induktivität in der Zuleitung. Der vorgegebene Rang hilft bei gleichen Werten und bei einem Wert, den das Plugin nicht lesen kann.
+<<<
+HERKUNFT: >>>
+Vorschlag von Claude zur Frage des Nutzers nach Kaskaden vom 27.11.2026. Nicht aus Freerouting.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-017
+
+[REQUIREMENT]
+MID: 880edac6dcd9437e889c164b1cc41cd1
+UID: RK-084
+STATUS: Vorschlag
+TITLE: Kaskade an einer Versorgung über Leiterbahn
+STATEMENT: >>>
+Führt die Versorgung über eine Leiterbahn zum Pin, muss der Routing-Kern die Kaskade als Kette verlegen: von der Quelle zum Kondensator mit dem höchsten Rang, dann in fallendem Rang weiter und vom Kondensator mit Rang 1 zum Pin. Er darf den Pin nicht an den Kondensatoren vorbei anschließen.
+<<<
+RATIONALE: >>>
+Der Strom zum Pin läuft so an jedem Kondensator vorbei.
+<<<
+HERKUNFT: >>>
+Vorschlag von Claude zur Frage des Nutzers nach Kaskaden vom 27.11.2026. Nicht aus Freerouting.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-017
+
+[REQUIREMENT]
+MID: efd525692e8f48839280238e9beaed87
+UID: RK-085
+STATUS: Vorschlag
+TITLE: Kaskade an einer Versorgungsfläche
+STATEMENT: >>>
+Liegt die Versorgung auf einer Kupferfläche, muss der Routing-Kern jeden Kondensator der Kaskade mit eigenen Vias an die Fläche anschließen und den Kondensator mit Rang 1 zusätzlich direkt mit dem Pin verbinden. Reicht der Platz nicht für alle, hat der niedrigere Rang Vorrang beim kürzesten Weg.
+<<<
+HERKUNFT: >>>
+Vorschlag von Claude zur Frage des Nutzers nach Kaskaden vom 27.11.2026. Nicht aus Freerouting.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-017
+
+[REQUIREMENT]
+MID: b88c05c87d0e4a12b3db00be9a95f8a6
+UID: RK-086
+STATUS: Vorschlag
+TITLE: Masseseite des Stützkondensators
+STATEMENT: >>>
+Der Routing-Kern muss den Masseanschluss eines Stützkondensators auf kurzem Weg an die Massefläche oder an den Massepin des gestützten Bausteins anschließen.
+<<<
+HERKUNFT: >>>
+Vorschlag von Claude zur Frage des Nutzers nach Kaskaden vom 27.11.2026. Nicht aus Freerouting.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-017
+
+[REQUIREMENT]
+MID: dec15aeb69cc4764b62125ad2e453942
+UID: RK-087
+STATUS: Vorschlag
+TITLE: Platzierung passt nicht zum Rang
+STATEMENT: >>>
+Der Routing-Kern muss melden, wenn ein Kondensator mit höherem Rang näher am gestützten Pin liegt als einer mit niedrigerem Rang. Er routet in diesem Fall nach der Lage der Bauteile.
+<<<
+RATIONALE: >>>
+Das Plugin verschiebt keine Bauteile. Der Nutzer soll den Widerspruch aber sehen.
+<<<
+HERKUNFT: >>>
+Vorschlag von Claude zur Frage des Nutzers nach Kaskaden vom 27.11.2026. Nicht aus Freerouting.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-017
+
+[REQUIREMENT]
+MID: 964afbcf262e4c9181c8a85ee96f966b
+UID: RK-088
+STATUS: Vorschlag
+TITLE: Unbekanntes Ziel im Feld
+STATEMENT: >>>
+Der Routing-Kern muss melden, wenn das Feld ein Bauteil oder einen Pin nennt, den es auf der Platine nicht gibt, oder wenn Kondensator und Pin an verschiedenen Netzen liegen.
+<<<
+HERKUNFT: >>>
+Vorschlag von Claude zur Frage des Nutzers nach Kaskaden vom 27.11.2026. Nicht aus Freerouting.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-017
 
 [[/SECTION]]
 
