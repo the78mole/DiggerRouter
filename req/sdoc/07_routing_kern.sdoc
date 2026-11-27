@@ -606,7 +606,7 @@ RELATIONS:
 [REQUIREMENT]
 MID: 14627e2304be4227b4a977a637e8ba38
 UID: RK-045
-STATUS: Vorschlag
+STATUS: Abgestimmt
 TITLE: Differenzialpaare gekoppelt routen
 STATEMENT: >>>
 Der Routing-Kern muss die beiden Netze eines Differenzialpaars nebeneinander im vorgegebenen Paarabstand verlegen und den größten erlaubten Längenunterschied einhalten.
@@ -638,7 +638,7 @@ RELATIONS:
 [REQUIREMENT]
 MID: c37292db53614a55b5f68ac50993793f
 UID: RK-047
-STATUS: Vorschlag
+STATUS: Abgestimmt
 TITLE: Längenabgleich durch Mäander
 STATEMENT: >>>
 Der Routing-Kern muss eine zu kurze Leiterbahn durch Mäander auf die vorgegebene Länge bringen können. Amplitude, Abstand und Eckenform der Mäander müssen einstellbar sein.
@@ -653,7 +653,7 @@ RELATIONS:
 [REQUIREMENT]
 MID: 5ddd47bf9fa94d2b9eaaa7b369041ddb
 UID: RK-048
-STATUS: Vorschlag
+STATUS: Abgestimmt
 TITLE: Entkopplungskondensatoren
 STATEMENT: >>>
 Der Routing-Kern muss Entkopplungskondensatoren erkennen und sie auf kurzem Weg an den zugehörigen Versorgungspin anschließen.
@@ -830,6 +830,132 @@ COMMENT: >>>
 RELATIONS:
 - TYPE: Parent
   VALUE: UR-015
+
+[[/SECTION]]
+
+[[SECTION]]
+MID: 44e063999ce84ca990d0b2ff24c2fc10
+TITLE: EMV- und Schutzbeschaltung
+
+[REQUIREMENT]
+MID: e19d251e36f84c779d092efef6ed41ce
+UID: RK-060
+STATUS: Abgestimmt
+TITLE: TVS-Dioden im Signalweg
+STATEMENT: >>>
+Der Routing-Kern muss eine TVS-Diode so anschließen, dass die Leiterbahn des geschützten Signals über das Pad der Diode führt oder die Diode über einen kurzen Stub an dieser Leiterbahn hängt.
+<<<
+RATIONALE: >>>
+Ein langer Stub hat Induktivität. Die Diode begrenzt einen Störimpuls dann zu spät und zu hoch.
+<<<
+HERKUNFT: >>>
+Wunsch des Nutzers vom 27.11.2026. Freerouting kennt keine Schutzbeschaltung.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-019
+
+[REQUIREMENT]
+MID: 9f6067c728b64c949738b3682069cdfe
+UID: RK-061
+STATUS: Vorschlag
+TITLE: Schutzbauteile erkennen
+STATEMENT: >>>
+Der Routing-Kern muss Schutzbauteile an einem Netz erkennen. Dazu gehören TVS-Dioden, ESD-Schutzarrays, Varistoren und Gasableiter.
+<<<
+HERKUNFT: >>>
+Abgeleitet aus RK-060, nicht aus Freerouting.
+<<<
+COMMENT: >>>
+[Claude] Offene Frage: Woran soll das Plugin ein Schutzbauteil erkennen? Möglich sind das Symbol aus der KiCad-Bibliothek, ein Feld am Bauteil oder eine Markierung durch den Nutzer in der Signalliste.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-019
+
+[REQUIREMENT]
+MID: 466487d812c5446c9e42b04bdfb1c2d5
+UID: RK-062
+STATUS: Vorschlag
+TITLE: Reihenfolge am geschützten Netz
+STATEMENT: >>>
+Der Routing-Kern muss ein Netz mit Schutzbauteil so verlegen, dass das Signal vom Steckverbinder zuerst das Schutzbauteil erreicht und erst danach den geschützten Baustein.
+<<<
+RATIONALE: >>>
+Der Störimpuls kommt von außen. Er soll abgeleitet sein, bevor er den Baustein erreicht.
+<<<
+HERKUNFT: >>>
+Abgeleitet aus RK-060, nicht aus Freerouting.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-019
+
+[REQUIREMENT]
+MID: fa3f76b8cedc4c468112ac73da1f030a
+UID: RK-063
+STATUS: Vorschlag
+TITLE: Größte Stublänge einstellbar
+STATEMENT: >>>
+Der Nutzer muss die größte erlaubte Länge eines Stubs zu einem Schutzbauteil einstellen können.
+<<<
+HERKUNFT: >>>
+Abgeleitet aus RK-060, nicht aus Freerouting.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-019
+
+[REQUIREMENT]
+MID: 2ea300a1d319461ca7f4ecbcaf0894cc
+UID: RK-064
+STATUS: Vorschlag
+TITLE: Kurzer Weg zur Masse
+STATEMENT: >>>
+Der Routing-Kern muss den Masseanschluss eines Schutzbauteils auf kurzem Weg an die Massefläche oder das Massenetz anschließen, bei einer Massefläche auf einer anderen Lage mit einem Via direkt am Pad.
+<<<
+RATIONALE: >>>
+Die Induktivität des Massewegs wirkt wie die eines Stubs im Signal.
+<<<
+HERKUNFT: >>>
+Abgeleitet aus RK-060, nicht aus Freerouting.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-019
+
+[REQUIREMENT]
+MID: 2f73081064e143bbb61c2907dd057ccd
+UID: RK-065
+STATUS: Vorschlag
+TITLE: Kein Lagenwechsel vor dem Schutzbauteil
+STATEMENT: >>>
+Der Routing-Kern soll zwischen Steckverbinder und Schutzbauteil keine Vias setzen, solange ein Weg ohne Via möglich ist.
+<<<
+RATIONALE: >>>
+Ein Via vor dem Schutzbauteil bringt den Störimpuls auf weitere Lagen.
+<<<
+HERKUNFT: >>>
+Abgeleitet aus RK-060, nicht aus Freerouting.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-019
+
+[REQUIREMENT]
+MID: 5433935115994b628c2da13e1b89cd96
+UID: RK-066
+STATUS: Vorschlag
+TITLE: Meldung bei nicht eingehaltener Schutzbeschaltung
+STATEMENT: >>>
+Der Routing-Kern muss melden, wenn er ein Schutzbauteil nicht nach RK-060 bis RK-065 anschließen konnte, und das betroffene Netz nennen.
+<<<
+HERKUNFT: >>>
+Abgeleitet aus RK-060, nicht aus Freerouting.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-019
 
 [[/SECTION]]
 

@@ -256,6 +256,15 @@ Der Nutzer muss sich darauf verlassen können, dass das Plugin Versorgungsnetze,
 <<<
 
 [REQUIREMENT]
+MID: b7b4d0ff96764faba71a15703ad805ad
+UID: UR-019
+STATUS: Abgestimmt
+TITLE: EMV- und Schutzbeschaltung beachten
+STATEMENT: >>>
+Der Nutzer muss sich darauf verlassen können, dass das Plugin EMV- und Schutzbeschaltungen so anschließt, dass sie wirken. Eine TVS-Diode muss im Signalweg liegen oder über einen kurzen Stub angebunden sein.
+<<<
+
+[REQUIREMENT]
 MID: 4d82c7ae0f4c4ec79a066f9bd07636a2
 UID: UR-018
 STATUS: Vorschlag
