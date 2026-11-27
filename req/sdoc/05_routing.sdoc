@@ -182,9 +182,6 @@ einem Endpunkt eine unfertige Leiterbahn angeschlossen, muss das Plugin
 Der Zustand ``x = 1`` tritt nur in diesem Fall auf, zum Beispiel während der
 Nutzer das Netz gerade von Hand routet.
 <<<
-COMMENT: >>>
-[Claude] Aus der Ergänzung des Nutzers zu [LINK: RTE-012] abgeteilt. Die Formel dort ergibt nie ``x = 1``, deshalb steht der Fall hier als eigene Regel.
-<<<
 RELATIONS:
 - TYPE: Parent
   VALUE: UR-006
@@ -281,10 +278,10 @@ RELATIONS:
 [REQUIREMENT]
 MID: 4871b02b606a4a64936a9612008b69db
 UID: RTE-031
-STATUS: Vorschlag
+STATUS: Abgestimmt
 TITLE: Stufe "schieben"
 STATEMENT: >>>
-In der Stufe "schieben" darf das Plugin vorhandene Leiterbahnen und Vias anderer Netze verschieben, um Platz für die neue Verbindung zu schaffen. Die verschobenen Netze müssen verbunden bleiben.
+In der Stufe "schieben" darf das Plugin vorhandene Leiterbahnen und Vias anderer Netze verschieben, um Platz für die neue Verbindung zu schaffen. Die verschobenen Netze müssen verbunden bleiben und weiter alle Design Rules einhalten: Abstände, Vorgaben zur Leitungslänge und Längengleichheit.
 <<<
 RELATIONS:
 - TYPE: Parent
@@ -335,10 +332,13 @@ UID: RTE-033
 STATUS: Vorschlag
 TITLE: Voreinstellung der Eingriffstiefe
 STATEMENT: >>>
-Die Voreinstellung der Eingriffstiefe muss "kein Eingriff" sein.
+Die Voreinstellung der Eingriffstiefe muss "schieben" sein.
 <<<
 RATIONALE: >>>
-Ohne bewusste Entscheidung des Nutzers bleibt seine bisherige Arbeit unverändert, wie in [LINK: UR-004] gefordert.
+Schieben ist zulässig, solange die verschobenen Leiterbahnen die Design Rules einhalten, siehe [LINK: RTE-031].
+<<<
+COMMENT: >>>
+[Claude] Offen: Mit dieser Voreinstellung verändert das Routen vorhandene Leiterbahnen, ohne dass der Nutzer es eigens erlaubt. [LINK: UR-004] verlangt bisher das Gegenteil.
 <<<
 RELATIONS:
 - TYPE: Parent
@@ -386,11 +386,9 @@ Bricht der Nutzer ein laufendes Routing ab, muss das Plugin in einem Dialog
 fragen, was mit dem unfertigen Routing geschehen soll:
 
 - beibehalten,
-- löschen,
-- den Zustand vor dem Routing wiederherstellen.
-<<<
-COMMENT: >>>
-[Claude] Auslegung: "löschen" entfernt nur die unfertige Leiterbahn. "Zustand vor dem Routing" entfernt alles, was dieser Lauf verlegt hat.
+- löschen: Das Plugin entfernt nur die unfertige Leiterbahn.
+- den Zustand vor dem Routing wiederherstellen: Das Plugin entfernt alles, was
+  dieser Lauf verlegt hat.
 <<<
 RELATIONS:
 - TYPE: Parent
