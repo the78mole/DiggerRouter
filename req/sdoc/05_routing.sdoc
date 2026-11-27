@@ -23,7 +23,7 @@ UID: RTE-001
 STATUS: Abgestimmt
 TITLE: Routen ergänzt nur
 STATEMENT: >>>
-Beim Routen eines Netzes muss das Plugin alle vorhandenen Leiterbahnen und Vias unverändert lassen und nur die fehlenden Verbindungen ergänzen.
+In der Stufe "kein Eingriff" nach [LINK: RTE-030] muss das Plugin beim Routen eines Netzes alle vorhandenen Leiterbahnen und Vias unverändert lassen und nur die fehlenden Verbindungen ergänzen.
 <<<
 RELATIONS:
 - TYPE: Parent
@@ -113,7 +113,8 @@ STATEMENT: >>>
 Das Plugin muss die Zahl ``x`` der verbundenen Endpunkte eines Netzes mit ``y``
 Endpunkten so bestimmen:
 
-- Ist kein Endpunkt mit einem anderen verbunden, gilt ``x = 0``.
+- Ist kein Endpunkt mit einem anderen verbunden, gilt ``x = 0``. Die Ausnahme
+  steht in [LINK: RTE-014].
 - Sonst gilt ``x = y - (k - 1)``. Dabei ist ``k`` die Zahl der Gruppen von
   Endpunkten, die untereinander verbunden sind. Ein einzelner unverbundener
   Endpunkt zählt als eigene Gruppe.
@@ -121,18 +122,35 @@ Endpunkten so bestimmen:
 Beispiele für ein Netz mit 4 Endpunkten: Sind 2 Endpunkte verbunden, gilt
 ``2/4``. Sind 2 Paare jeweils verbunden, gilt ``3/4``. Sind alle verbunden,
 gilt ``4/4``.
-
-Der Zustand x = 1 kann somit nur auftreten, wenn eine unfertige Leiterbahn an einen Endpunkt angeschlossen ist oder der Nutzer gerade manuell das Netz routet.
 <<<
 RATIONALE: >>>
 Mit dieser Regel ist ein Netz genau dann vollständig, wenn ``x = y`` gilt. Jede ergänzte Verbindung erhöht ``x``.
 <<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-006
+
+[REQUIREMENT]
+MID: 9826af9a33e34eec9e4a19d8b0885d34
+UID: RTE-014
+STATUS: Abgestimmt
+TITLE: Angefangene Verbindung
+STATEMENT: >>>
+Ist kein Endpunkt eines Netzes mit einem anderen verbunden, aber an mindestens
+einem Endpunkt eine unfertige Leiterbahn angeschlossen, muss das Plugin
+``x = 1`` werten.
+
+Der Zustand ``x = 1`` tritt nur in diesem Fall auf, zum Beispiel während der
+Nutzer das Netz gerade von Hand routet.
+<<<
 COMMENT: >>>
-[Claude] Die Zählregel für teilweise verbundene Netze mit mehr als 3 Endpunkten ist eine Auslegung und mit dem Nutzer noch nicht geklärt.
+[Claude] Aus der Ergänzung des Nutzers zu [LINK: RTE-012] abgeteilt. Die Formel dort ergibt nie ``x = 1``, deshalb steht der Fall hier als eigene Regel.
 <<<
 RELATIONS:
 - TYPE: Parent
   VALUE: UR-006
+- TYPE: Parent
+  VALUE: UR-013
 
 [REQUIREMENT]
 MID: 7a10bb450f6341bdb9b20a141cbaa735
@@ -145,5 +163,124 @@ Das Plugin muss ein Netz mit ``x = 0`` als ungeroutet, ein Netz mit ``0 < x < y`
 RELATIONS:
 - TYPE: Parent
   VALUE: UR-006
+
+[[/SECTION]]
+
+[[SECTION]]
+MID: dd6379a0d3814f198a22f3066e0295ed
+TITLE: Lagen
+
+[REQUIREMENT]
+MID: b928feda6a30409b97f8b10840afe3dd
+UID: RTE-020
+STATUS: Vorschlag
+TITLE: Lagen ausschließen
+STATEMENT: >>>
+Der Nutzer muss einzelne Lagen vom Routing der ausgewählten Netze ausschließen können. Das Plugin darf auf einer ausgeschlossenen Lage keine Leiterbahn verlegen.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-012
+
+[REQUIREMENT]
+MID: 09fd5a29355a405881e1d05ea753fb11
+UID: RTE-021
+STATUS: Vorschlag
+TITLE: Lagen meiden
+STATEMENT: >>>
+Der Nutzer muss einzelne Lagen als zu meiden kennzeichnen können. Das Plugin darf eine solche Lage nur nutzen, wenn es ohne sie keine Verbindung findet.
+<<<
+RATIONALE: >>>
+Auf Lagen für die Versorgungsspannung ist Signalrouting möglich, verschlechtert aber die niederohmige Anbindung und die EMV.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-012
+
+[REQUIREMENT]
+MID: bbc19a0c9b43403cb9859ec6ca99e7a9
+UID: RTE-022
+STATUS: Vorschlag
+TITLE: Lagen bevorzugen
+STATEMENT: >>>
+Der Nutzer muss einzelne Lagen als bevorzugt kennzeichnen können. Das Plugin muss Leiterbahnen vorrangig auf den bevorzugten Lagen verlegen.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-012
+
+[REQUIREMENT]
+MID: 0e0ae00e20eb490c8a7bae3c395f48de
+UID: RTE-023
+STATUS: Vorschlag
+TITLE: Vorzugsrichtung je Lage
+STATEMENT: >>>
+Der Nutzer muss für einzelne Lagen eine Vorzugsrichtung festlegen können. Das Plugin muss Leiterbahnen auf einer solchen Lage vorrangig in dieser Richtung verlegen.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-012
+
+[[/SECTION]]
+
+[[SECTION]]
+MID: 20285575422d42f09de86c45766f361c
+TITLE: Eingriffstiefe
+
+[REQUIREMENT]
+MID: 3fc7b57f15544c409b62f4f59327a894
+UID: RTE-030
+STATUS: Vorschlag
+TITLE: Stufen der Eingriffstiefe
+STATEMENT: >>>
+Der Nutzer muss für das Routen zwischen drei Stufen wählen können: "kein Eingriff", "schieben" und "auflösen".
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-014
+
+[REQUIREMENT]
+MID: 4871b02b606a4a64936a9612008b69db
+UID: RTE-031
+STATUS: Vorschlag
+TITLE: Stufe "schieben"
+STATEMENT: >>>
+In der Stufe "schieben" darf das Plugin vorhandene Leiterbahnen und Vias anderer Netze verschieben, um Platz für die neue Verbindung zu schaffen. Die verschobenen Netze müssen verbunden bleiben.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-014
+
+[REQUIREMENT]
+MID: 3525678a1c8d47d7807f7c0d6a406f9e
+UID: RTE-032
+STATUS: Vorschlag
+TITLE: Stufe "auflösen"
+STATEMENT: >>>
+In der Stufe "auflösen" darf das Plugin zusätzlich Leiterbahnen und Vias anderer Netze entfernen, die der neuen Verbindung im Weg sind.
+<<<
+COMMENT: >>>
+[Claude] Offen: Routet das Plugin die aufgelösten Netze danach selbst neu? Gilt der Eingriff auch für gesperrte Leiterbahnen?
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-014
+
+[REQUIREMENT]
+MID: f3660dfc0812414ba9b24ac944dff52e
+UID: RTE-033
+STATUS: Vorschlag
+TITLE: Voreinstellung der Eingriffstiefe
+STATEMENT: >>>
+Die Voreinstellung der Eingriffstiefe muss "kein Eingriff" sein.
+<<<
+RATIONALE: >>>
+Ohne bewusste Entscheidung des Nutzers bleibt seine bisherige Arbeit unverändert, wie in [LINK: UR-004] gefordert.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-004
+- TYPE: Parent
+  VALUE: UR-014
 
 [[/SECTION]]

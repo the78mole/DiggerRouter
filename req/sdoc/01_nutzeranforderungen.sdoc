@@ -41,7 +41,7 @@ Netz der Platine in KiCad.
 
 Das Feld STATUS zeigt den Stand einer Anforderung:
 
-- ``Vorschlag``: von Claude ergänzt, vom Nutzer noch nicht bestätigt.
+- ``Vorschlag``: noch nicht bestätigt, zum Beispiel von Claude ergänzt oder abgeleitet.
 - ``Abgestimmt``: mit dem Nutzer geklärt.
 - ``Umgesetzt``: im Code umgesetzt.
 - ``Verifiziert``: durch einen Test oder eine Prüfung nachgewiesen.
@@ -92,13 +92,22 @@ UID: UR-004
 STATUS: Abgestimmt
 TITLE: Vorhandene Leiterbahnen behalten
 STATEMENT: >>>
-Der Nutzer muss sich darauf verlassen können, dass das Routing bereits verlegte Leiterbahnen und Vias nicht verändert.
+Der Nutzer muss sich darauf verlassen können, dass das Routing bereits verlegte Leiterbahnen und Vias nicht verändert, solange er keinen Eingriff nach [LINK: UR-014] erlaubt hat.
 <<<
 RATIONALE: >>>
 Kritische Signale verlegt der Nutzer von Hand. Diese Arbeit darf das Plugin nicht zerstören.
 <<<
-COMMENT: >>>
-[the78mole] Der Nutzer soll wählen können, wie tief der Eingriff sein darf: Kein Eingriff, andere Signale schieben, andere Signale auflösen, die im Weg sind.
+
+[REQUIREMENT]
+MID: 52670214d9044e7a9da0a42571192967
+UID: UR-014
+STATUS: Abgestimmt
+TITLE: Eingriffstiefe wählen
+STATEMENT: >>>
+Der Nutzer muss wählen können, wie tief das Routing in vorhandene Leiterbahnen eingreifen darf: kein Eingriff, andere Signale schieben oder andere Signale auflösen, die im Weg sind.
+<<<
+RATIONALE: >>>
+Auf einer dicht belegten Platine findet das Routing ohne Eingriff oft keinen Weg. Der Nutzer entscheidet, wie viel seiner bisherigen Arbeit das Plugin dafür verändern darf.
 <<<
 
 [REQUIREMENT]
@@ -119,10 +128,10 @@ UID: UR-012
 STATUS: Vorschlag
 TITLE: Lagenverfügbarkeit für Auto-Routing auswählen
 STATEMENT: >>>
-Der Nutzer soll die Möglichkeit haben, das Routing für die ausgewählten Netze auf bestimmte Lagen zu beschränken. Dabei soll es die Möglichkeit geben, bestimmt Layer zu bevorzugen, auf einzelnen Layern vorzugsrichtungen festzulegen, Layer vom Routing möglichst auszunehmen und Layer komplett auszuschließen.
+Der Nutzer soll die Möglichkeit haben, das Routing für die ausgewählten Netze auf bestimmte Lagen zu beschränken. Dabei soll es die Möglichkeit geben, bestimmte Layer zu bevorzugen, auf einzelnen Layern Vorzugsrichtungen festzulegen, Layer vom Routing möglichst auszunehmen und Layer komplett auszuschließen.
 <<<
 RATIONALE: >>>
-Der Nutzer legt einige Layer bereits für die Versorgungsspannung fest, um eine möglichst niederohmige Anbindung zu gewährleisten und die EMV zu optimieren. Generell ist Signalrouting dort möglich, aber es verschlechtert beide Zielgrößen dieser speziellen Lagen und ist nach Möglichkeit zu vermeiden. Auch gibt es Lagen, die für bestimmte Signalklassen (z.B. High-Speed oder RF) genutzt werden und möglichst wenig
+Der Nutzer legt einige Layer bereits für die Versorgungsspannung fest, um eine möglichst niederohmige Anbindung zu gewährleisten und die EMV zu optimieren. Generell ist Signalrouting dort möglich, aber es verschlechtert beide Zielgrößen dieser speziellen Lagen und ist nach Möglichkeit zu vermeiden. Auch gibt es Lagen, die für bestimmte Signalklassen (z.B. High-Speed oder RF) genutzt werden und möglichst wenig von anderen Signalen belegt werden sollen.
 <<<
 
 [[/SECTION]]
@@ -158,10 +167,22 @@ UID: UR-008
 STATUS: Abgestimmt
 TITLE: Parallel weiterarbeiten
 STATEMENT: >>>
-Der Nutzer muss im PCB-Editor weiterarbeiten können, während der Überblick über die Netze sichtbar bleibt. Während der Nutzer manuell routet, sollen die Informationen aktualisiert werden, sobald der Nutzer die Leiterbahn pinnt, also einen Zwischenschritt mit der Maustaste festlegt,
+Der Nutzer muss im PCB-Editor weiterarbeiten können, während der Überblick über die Netze sichtbar bleibt.
 <<<
 RATIONALE: >>>
 Der Nutzer kennt dieses Verhalten vom DRC-Fenster in KiCad.
+<<<
+
+[REQUIREMENT]
+MID: 02d55ae3494a457cb46d8a501e7d3f86
+UID: UR-013
+STATUS: Abgestimmt
+TITLE: Aktueller Überblick beim manuellen Routen
+STATEMENT: >>>
+Während der Nutzer von Hand routet, muss der Überblick über die Netze den neuen Stand zeigen, sobald der Nutzer die Leiterbahn pinnt, also einen Zwischenschritt mit der Maustaste festlegt.
+<<<
+RATIONALE: >>>
+Der Nutzer sieht den Fortschritt schon während des Verlegens und nicht erst, wenn die Leiterbahn fertig ist.
 <<<
 
 [[/SECTION]]
@@ -173,7 +194,7 @@ TITLE: Vorschläge
 [TEXT]
 MID: 4511ff6606e645ef8bdbf145c5b99972
 STATEMENT: >>>
-Die Anforderungen in diesem Abschnitt sind Vorschläge von Claude. Der Nutzer hat sie noch nicht bestätigt.
+Die Anforderungen in diesem Abschnitt hat Claude vorgeschlagen. Das Feld STATUS zeigt, ob der Nutzer sie bestätigt hat.
 <<<
 
 [REQUIREMENT]

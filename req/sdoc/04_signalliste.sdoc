@@ -73,6 +73,21 @@ RELATIONS:
 - TYPE: Parent
   VALUE: UR-008
 
+[REQUIREMENT]
+MID: a8c3cedb523843ffb4d463939c8136f1
+UID: SIG-005
+STATUS: Vorschlag
+TITLE: Aktualisierung beim manuellen Routen
+STATEMENT: >>>
+Während der Nutzer eine Leiterbahn von Hand verlegt, muss das Signallisten-Fenster die Zeile des Netzes aktualisieren, sobald der Nutzer einen Zwischenschritt der Leiterbahn mit der Maustaste festlegt.
+<<<
+COMMENT: >>>
+[Claude] Aus [LINK: UR-013] abgeleitet. Offen ist, ob die IPC-API von KiCad eine Leiterbahn schon vor ihrem Abschluss meldet.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-013
+
 [[/SECTION]]
 
 [[SECTION]]
