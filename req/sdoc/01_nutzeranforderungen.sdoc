@@ -90,12 +90,12 @@ Der Nutzer denkt in Signalen des Schaltplans. Er soll das Netz nicht ein zweites
 MID: 3006581bed3f45c68d558f683ddfd079
 UID: UR-004
 STATUS: Abgestimmt
-TITLE: Vorhandene Leiterbahnen behalten
+TITLE: Vorhandene Leiterbahnen schützen
 STATEMENT: >>>
-Der Nutzer muss sich darauf verlassen können, dass das Routing bereits verlegte Leiterbahnen und Vias nicht verändert, solange er keinen Eingriff nach [LINK: UR-014] erlaubt hat.
+Der Nutzer muss sich darauf verlassen können, dass das Routing bereits verlegte Leiterbahnen und Vias höchstens regelkonform verschiebt und sie nie auflöst, solange er das nicht nach [LINK: UR-014] erlaubt hat.
 <<<
 RATIONALE: >>>
-Kritische Signale verlegt der Nutzer von Hand. Diese Arbeit darf das Plugin nicht zerstören.
+Kritische Signale verlegt der Nutzer von Hand. Diese Arbeit darf das Plugin nicht zerstören. Ein Verschieben, das alle Design Rules einhält, erhält die Verbindung und ihre Eigenschaften.
 <<<
 
 [REQUIREMENT]

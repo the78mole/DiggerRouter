@@ -329,16 +329,13 @@ RELATIONS:
 [REQUIREMENT]
 MID: f3660dfc0812414ba9b24ac944dff52e
 UID: RTE-033
-STATUS: Vorschlag
+STATUS: Abgestimmt
 TITLE: Voreinstellung der Eingriffstiefe
 STATEMENT: >>>
 Die Voreinstellung der Eingriffstiefe muss "schieben" sein.
 <<<
 RATIONALE: >>>
-Schieben ist zulässig, solange die verschobenen Leiterbahnen die Design Rules einhalten, siehe [LINK: RTE-031].
-<<<
-COMMENT: >>>
-[Claude] Offen: Mit dieser Voreinstellung verändert das Routen vorhandene Leiterbahnen, ohne dass der Nutzer es eigens erlaubt. [LINK: UR-004] verlangt bisher das Gegenteil.
+Schieben verändert vorhandene Leiterbahnen nur regelkonform, siehe [LINK: RTE-031]. Das lässt [LINK: UR-004] zu.
 <<<
 RELATIONS:
 - TYPE: Parent
