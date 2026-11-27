@@ -209,7 +209,7 @@ TITLE: Lagen
 [REQUIREMENT]
 MID: b928feda6a30409b97f8b10840afe3dd
 UID: RTE-020
-STATUS: Vorschlag
+STATUS: Abgestimmt
 TITLE: Lagen ausschließen
 STATEMENT: >>>
 Der Nutzer muss einzelne Lagen vom Routing der ausgewählten Netze ausschließen können. Das Plugin darf auf einer ausgeschlossenen Lage keine Leiterbahn verlegen.
@@ -221,7 +221,7 @@ RELATIONS:
 [REQUIREMENT]
 MID: 09fd5a29355a405881e1d05ea753fb11
 UID: RTE-021
-STATUS: Vorschlag
+STATUS: Abgestimmt
 TITLE: Lagen meiden
 STATEMENT: >>>
 Der Nutzer muss einzelne Lagen als zu meiden kennzeichnen können. Das Plugin darf eine solche Lage nur nutzen, wenn es ohne sie keine Verbindung findet.
@@ -236,7 +236,7 @@ RELATIONS:
 [REQUIREMENT]
 MID: bbc19a0c9b43403cb9859ec6ca99e7a9
 UID: RTE-022
-STATUS: Vorschlag
+STATUS: Abgestimmt
 TITLE: Lagen bevorzugen
 STATEMENT: >>>
 Der Nutzer muss einzelne Lagen als bevorzugt kennzeichnen können. Das Plugin muss Leiterbahnen vorrangig auf den bevorzugten Lagen verlegen.
@@ -248,7 +248,7 @@ RELATIONS:
 [REQUIREMENT]
 MID: 0e0ae00e20eb490c8a7bae3c395f48de
 UID: RTE-023
-STATUS: Vorschlag
+STATUS: Abgestimmt
 TITLE: Vorzugsrichtung je Lage
 STATEMENT: >>>
 Der Nutzer muss für einzelne Lagen eine Vorzugsrichtung festlegen können. Das Plugin muss Leiterbahnen auf einer solchen Lage vorrangig in dieser Richtung verlegen.
@@ -266,7 +266,7 @@ TITLE: Eingriffstiefe
 [REQUIREMENT]
 MID: 3fc7b57f15544c409b62f4f59327a894
 UID: RTE-030
-STATUS: Vorschlag
+STATUS: Abgestimmt
 TITLE: Stufen der Eingriffstiefe
 STATEMENT: >>>
 Der Nutzer muss für das Routen zwischen drei Stufen wählen können: "kein Eingriff", "schieben" und "auflösen".
@@ -290,7 +290,7 @@ RELATIONS:
 [REQUIREMENT]
 MID: 3525678a1c8d47d7807f7c0d6a406f9e
 UID: RTE-032
-STATUS: Vorschlag
+STATUS: Abgestimmt
 TITLE: Stufe "auflösen"
 STATEMENT: >>>
 In der Stufe "auflösen" darf das Plugin zusätzlich Leiterbahnen und Vias anderer Netze entfernen, die der neuen Verbindung im Weg sind.

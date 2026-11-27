@@ -22,7 +22,7 @@ Dieses Dokument sammelt vorgeschlagene Systemanforderungen, die der Nutzer noch 
 [REQUIREMENT]
 MID: fce7595abe0a47a4955d472c0670a2c4
 UID: VOR-006
-STATUS: Vorschlag
+STATUS: Abgestimmt
 TITLE: Rückfrage ohne ausgewähltes Netz
 STATEMENT: >>>
 Ist beim Klick auf den Knopf aus [LINK: PCB-001] kein Netz ausgewählt, muss das Plugin den Nutzer fragen, ob es stattdessen alle unfertigen Netze routen soll.

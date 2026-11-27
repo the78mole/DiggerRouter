@@ -125,7 +125,7 @@ So kann der Nutzer ein Netz schnell neu routen lassen oder Platz für andere Net
 [REQUIREMENT]
 MID: a7ba50aaf6064d5b94b0599fade173c1
 UID: UR-012
-STATUS: Vorschlag
+STATUS: Abgestimmt
 TITLE: Lagenverfügbarkeit für Auto-Routing auswählen
 STATEMENT: >>>
 Der Nutzer soll die Möglichkeit haben, das Routing für die ausgewählten Netze auf bestimmte Lagen zu beschränken. Dabei soll es die Möglichkeit geben, bestimmte Layer zu bevorzugen, auf einzelnen Layern Vorzugsrichtungen festzulegen, Layer vom Routing möglichst auszunehmen und Layer komplett auszuschließen.
