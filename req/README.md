@@ -22,7 +22,7 @@ Das Feld `STATUS` zeigt den Stand einer Anforderung: `Vorschlag`, `Abgestimmt`,
 ## HTML erzeugen
 
 StrictDoc kommt aus dem Fork `the78mole/strictdoc`. `req/requirements.txt`
-legt den Commit fest. Die Befehle laufen im Wurzelverzeichnis des Repos. Dort
+legt den Commit des Branch `feature/static-editing` fest. Die Befehle laufen im Wurzelverzeichnis des Repos. Dort
 liegt die Konfiguration `strictdoc_config.py`.
 
 ```sh
