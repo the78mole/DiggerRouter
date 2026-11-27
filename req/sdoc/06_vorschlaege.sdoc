@@ -16,19 +16,5 @@ IMPORT_FROM_FILE: @diggerrouter
 [TEXT]
 MID: 02e5f034f0344e858e859454a1bd5d2b
 STATEMENT: >>>
-Dieses Dokument sammelt vorgeschlagene Systemanforderungen, die der Nutzer noch nicht bestätigt hat und die zu keinem bestehenden Abschnitt gehören. Eine bestätigte Anforderung wandert mit neuer UID in das Dokument ihres Themengebiets.
+Dieses Dokument sammelt vorgeschlagene Systemanforderungen, die der Nutzer noch nicht bestätigt hat und die zu keinem bestehenden Abschnitt gehören. Eine bestätigte Anforderung wandert mit neuer UID in das Dokument ihres Themengebiets. Derzeit ist kein Vorschlag offen.
 <<<
-
-[REQUIREMENT]
-MID: fce7595abe0a47a4955d472c0670a2c4
-UID: VOR-006
-STATUS: Abgestimmt
-TITLE: Rückfrage ohne ausgewähltes Netz
-STATEMENT: >>>
-Ist beim Klick auf den Knopf aus [LINK: PCB-001] kein Netz ausgewählt, muss das Plugin den Nutzer fragen, ob es stattdessen alle unfertigen Netze routen soll.
-<<<
-RELATIONS:
-- TYPE: Parent
-  VALUE: UR-011
-- TYPE: Parent
-  VALUE: UR-002

@@ -38,6 +38,20 @@ RELATIONS:
   VALUE: UR-003
 
 [REQUIREMENT]
+MID: fce7595abe0a47a4955d472c0670a2c4
+UID: PCB-004
+STATUS: Abgestimmt
+TITLE: Rückfrage ohne ausgewähltes Netz
+STATEMENT: >>>
+Ist beim Klick auf den Knopf aus [LINK: PCB-001] kein Netz ausgewählt, muss das Plugin den Nutzer fragen, ob es stattdessen alle unfertigen Netze routen soll.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-011
+- TYPE: Parent
+  VALUE: UR-002
+
+[REQUIREMENT]
 MID: 105d6976d1c140bba208ae84874094ea
 UID: PCB-003
 STATUS: Abgestimmt

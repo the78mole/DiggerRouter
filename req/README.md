@@ -10,7 +10,7 @@ in `req/sdoc`.
 | `03_pcb_editor.sdoc` | Knöpfe im PCB-Editor | `PCB-` |
 | `04_signalliste.sdoc` | Signallisten-Fenster | `SIG-` |
 | `05_routing.sdoc` | Routen, Auflösen, Verbindungsstand, Lagen, Eingriffstiefe, Rückgängig und Abbruch | `RTE-` |
-| `06_vorschlaege.sdoc` | Vorschläge ohne Themendokument, noch nicht bestätigt | `VOR-` |
+| `06_vorschlaege.sdoc` | Vorschläge ohne Themendokument, noch nicht bestätigt (derzeit leer) | `VOR-` |
 | `grammar.sgra` | Gemeinsame Grammatik aller Dokumente | |
 
 Jede Systemanforderung verweist mit einer `Parent`-Relation auf die
