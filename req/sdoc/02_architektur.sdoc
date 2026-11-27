@@ -83,3 +83,30 @@ RELATIONS:
   VALUE: UR-001
 - TYPE: Parent
   VALUE: UR-008
+
+[REQUIREMENT]
+MID: 30031ef7959d44f5b97df121389ae0d2
+UID: ARCH-006
+STATUS: Abgestimmt
+TITLE: Zielversion KiCad 10
+STATEMENT: >>>
+Das Plugin muss mit KiCad 10 arbeiten. Die Implementierung muss gegen KiCad 10 erfolgen.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-001
+
+[REQUIREMENT]
+MID: 704e8842ff3e451dbee14c7647a1d11b
+UID: ARCH-007
+STATUS: Abgestimmt
+TITLE: Unterstützung von KiCad 9
+STATEMENT: >>>
+Das Plugin muss auch mit KiCad 9 arbeiten, sofern die Einschränkungen und Abweichungen von KiCad 9 den Code um höchstens 10 % vergrößern. Die Anpassungen für KiCad 9 erfolgen nach der Umsetzung für KiCad 10.
+<<<
+RATIONALE: >>>
+Die IPC-API gibt es seit KiCad 9.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-001

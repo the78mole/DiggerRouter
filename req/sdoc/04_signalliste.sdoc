@@ -88,6 +88,18 @@ RELATIONS:
 - TYPE: Parent
   VALUE: UR-013
 
+[REQUIREMENT]
+MID: c55bf87b6b5d4a7ab89cc4370a075a60
+UID: SIG-006
+STATUS: Abgestimmt
+TITLE: Bedienbarkeit während des Routings
+STATEMENT: >>>
+Das Signallisten-Fenster muss während eines laufenden Routings bedienbar bleiben und zeigen, welches Netz das Plugin gerade routet.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-008
+
 [[/SECTION]]
 
 [[SECTION]]

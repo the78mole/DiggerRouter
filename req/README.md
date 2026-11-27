@@ -6,18 +6,20 @@ in `req/sdoc`.
 | Datei | Inhalt | UIDs |
 | --- | --- | --- |
 | `01_nutzeranforderungen.sdoc` | Was der Nutzer erreichen will | `UR-` |
-| `02_architektur.sdoc` | Aufbau des Plugins | `ARCH-` |
+| `02_architektur.sdoc` | Aufbau des Plugins, unterstützte KiCad-Versionen | `ARCH-` |
 | `03_pcb_editor.sdoc` | Knöpfe im PCB-Editor | `PCB-` |
 | `04_signalliste.sdoc` | Signallisten-Fenster | `SIG-` |
-| `05_routing.sdoc` | Routen, Auflösen, Verbindungsstand | `RTE-` |
-| `06_vorschlaege.sdoc` | Noch nicht bestätigte Vorschläge | `VOR-` |
+| `05_routing.sdoc` | Routen, Auflösen, Verbindungsstand, Lagen, Eingriffstiefe, Rückgängig und Abbruch | `RTE-` |
+| `06_vorschlaege.sdoc` | Vorschläge ohne Themendokument, noch nicht bestätigt | `VOR-` |
 | `grammar.sgra` | Gemeinsame Grammatik aller Dokumente | |
 
 Jede Systemanforderung verweist mit einer `Parent`-Relation auf die
 Nutzeranforderung, aus der sie folgt.
 
 Das Feld `STATUS` zeigt den Stand einer Anforderung: `Vorschlag`, `Abgestimmt`,
-`Umgesetzt` oder `Verifiziert`.
+`Umgesetzt` oder `Verifiziert`. Ein bestätigter Vorschlag aus
+`06_vorschlaege.sdoc` wandert mit neuer UID in das Dokument seines
+Themengebiets.
 
 ## HTML erzeugen
 

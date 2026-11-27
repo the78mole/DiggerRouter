@@ -41,6 +41,30 @@ RELATIONS:
 - TYPE: Parent
   VALUE: UR-004
 
+[REQUIREMENT]
+MID: c31fede7e61944f482a6e091298bbb58
+UID: RTE-005
+STATUS: Abgestimmt
+TITLE: Design Rules einhalten
+STATEMENT: >>>
+Das Plugin muss beim Routen die Design Rules der Platine und der Netzklassen einhalten: Abstände, Leiterbahnbreiten und Via-Größen.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-009
+
+[REQUIREMENT]
+MID: 05fb2ef8762749d0827b3d56ec6d4dc1
+UID: RTE-006
+STATUS: Abgestimmt
+TITLE: Meldung bei unvollständigem Routing
+STATEMENT: >>>
+Kann das Plugin ein Netz nicht vollständig routen, muss es die verlegten Teile behalten und dem Nutzer melden, welche Netze unvollständig sind.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-011
+
 [[/SECTION]]
 
 [[SECTION]]
@@ -66,6 +90,21 @@ STATUS: Abgestimmt
 TITLE: Auflösen löscht auch manuelle und gesperrte Elemente
 STATEMENT: >>>
 Beim Auflösen eines Netzes muss das Plugin auch Leiterbahnen und Vias löschen, die der Nutzer von Hand verlegt hat oder die gesperrt (locked) sind.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-005
+
+[REQUIREMENT]
+MID: c1b50f709d7848f485c444ed63d008ee
+UID: RTE-007
+STATUS: Abgestimmt
+TITLE: Rückfrage vor dem Löschen gesperrter Elemente
+STATEMENT: >>>
+Betrifft "auflösen" gesperrte Leiterbahnen oder Vias, muss das Plugin vor dem Löschen eine Bestätigung des Nutzers einholen.
+<<<
+RATIONALE: >>>
+Der Nutzer sperrt Elemente, um sie vor versehentlichen Änderungen zu schützen.
 <<<
 RELATIONS:
 - TYPE: Parent
@@ -259,8 +298,32 @@ TITLE: Stufe "auflösen"
 STATEMENT: >>>
 In der Stufe "auflösen" darf das Plugin zusätzlich Leiterbahnen und Vias anderer Netze entfernen, die der neuen Verbindung im Weg sind.
 <<<
-COMMENT: >>>
-[Claude] Offen: Routet das Plugin die aufgelösten Netze danach selbst neu? Gilt der Eingriff auch für gesperrte Leiterbahnen?
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-014
+
+[REQUIREMENT]
+MID: 45783f0c43444a22badb165d019c1def
+UID: RTE-034
+STATUS: Abgestimmt
+TITLE: Aufgelöste Netze neu routen
+STATEMENT: >>>
+Hat das Plugin in der Stufe "auflösen" Leiterbahnen oder Vias anderer Netze entfernt, muss es diese Netze danach selbst neu routen.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-014
+
+[REQUIREMENT]
+MID: 3d00b3514ea1481c8054d5cd5be5ca37
+UID: RTE-035
+STATUS: Abgestimmt
+TITLE: Rückfrage vor dem Eingriff in gesperrte Elemente
+STATEMENT: >>>
+Würde das Plugin in der Stufe "schieben" oder "auflösen" gesperrte Leiterbahnen oder Vias verändern, muss es vorher eine Bestätigung des Nutzers einholen.
+<<<
+RATIONALE: >>>
+Der Nutzer sperrt Elemente, um sie vor versehentlichen Änderungen zu schützen.
 <<<
 RELATIONS:
 - TYPE: Parent
@@ -282,5 +345,57 @@ RELATIONS:
   VALUE: UR-004
 - TYPE: Parent
   VALUE: UR-014
+
+[[/SECTION]]
+
+[[SECTION]]
+MID: a49dfe05d0af455f9f4b557a7ced7500
+TITLE: Rückgängig und Abbruch
+
+[REQUIREMENT]
+MID: efabffff8e2c40b9bc3019ecbab6cb13
+UID: RTE-040
+STATUS: Abgestimmt
+TITLE: Ein Undo-Schritt je Aktion
+STATEMENT: >>>
+Das Plugin muss jede Aktion "routen" oder "auflösen" so ausführen, dass der Nutzer sie im PCB-Editor mit einem einzigen Undo-Schritt rückgängig machen kann.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-010
+
+[REQUIREMENT]
+MID: a3da519c7c7e442792d837c193a8dec7
+UID: RTE-041
+STATUS: Abgestimmt
+TITLE: Routing abbrechen
+STATEMENT: >>>
+Der Nutzer muss ein laufendes Routing abbrechen können.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-008
+
+[REQUIREMENT]
+MID: 666ccad77eda40b49edeebbf6565e7d6
+UID: RTE-042
+STATUS: Abgestimmt
+TITLE: Rückfrage beim Abbruch
+STATEMENT: >>>
+Bricht der Nutzer ein laufendes Routing ab, muss das Plugin in einem Dialog
+fragen, was mit dem unfertigen Routing geschehen soll:
+
+- beibehalten,
+- löschen,
+- den Zustand vor dem Routing wiederherstellen.
+<<<
+COMMENT: >>>
+[Claude] Auslegung: "löschen" entfernt nur die unfertige Leiterbahn. "Zustand vor dem Routing" entfernt alles, was dieser Lauf verlegt hat.
+<<<
+RELATIONS:
+- TYPE: Parent
+  VALUE: UR-008
+- TYPE: Parent
+  VALUE: UR-010
 
 [[/SECTION]]

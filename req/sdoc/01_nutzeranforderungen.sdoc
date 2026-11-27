@@ -134,6 +134,30 @@ RATIONALE: >>>
 Der Nutzer legt einige Layer bereits für die Versorgungsspannung fest, um eine möglichst niederohmige Anbindung zu gewährleisten und die EMV zu optimieren. Generell ist Signalrouting dort möglich, aber es verschlechtert beide Zielgrößen dieser speziellen Lagen und ist nach Möglichkeit zu vermeiden. Auch gibt es Lagen, die für bestimmte Signalklassen (z.B. High-Speed oder RF) genutzt werden und möglichst wenig von anderen Signalen belegt werden sollen.
 <<<
 
+[REQUIREMENT]
+MID: 32ae6fdf99f54f5e832a47e7f8e96f5d
+UID: UR-009
+STATUS: Abgestimmt
+TITLE: Regelkonformes Ergebnis
+STATEMENT: >>>
+Der Nutzer muss sich darauf verlassen können, dass vom Plugin verlegte Leiterbahnen und Vias die Design Rules der Platine einhalten.
+<<<
+RATIONALE: >>>
+Ein Routing mit DRC-Fehlern muss der Nutzer von Hand nacharbeiten.
+<<<
+
+[REQUIREMENT]
+MID: ed7db7eda77348beb9075db6134702d1
+UID: UR-010
+STATUS: Abgestimmt
+TITLE: Aktionen rückgängig machen
+STATEMENT: >>>
+Der Nutzer muss jede Aktion des Plugins im PCB-Editor rückgängig machen können.
+<<<
+RATIONALE: >>>
+Das gilt besonders für "auflösen", das auch von Hand verlegte und gesperrte Leiterbahnen löscht.
+<<<
+
 [[/SECTION]]
 
 [[SECTION]]
@@ -183,42 +207,6 @@ Während der Nutzer von Hand routet, muss der Überblick über die Netze den neu
 <<<
 RATIONALE: >>>
 Der Nutzer sieht den Fortschritt schon während des Verlegens und nicht erst, wenn die Leiterbahn fertig ist.
-<<<
-
-[[/SECTION]]
-
-[[SECTION]]
-MID: b4bc0726522046a1a9b6ad6c90a6cc4b
-TITLE: Vorschläge
-
-[TEXT]
-MID: 4511ff6606e645ef8bdbf145c5b99972
-STATEMENT: >>>
-Die Anforderungen in diesem Abschnitt hat Claude vorgeschlagen. Das Feld STATUS zeigt, ob der Nutzer sie bestätigt hat.
-<<<
-
-[REQUIREMENT]
-MID: 32ae6fdf99f54f5e832a47e7f8e96f5d
-UID: UR-009
-STATUS: Abgestimmt
-TITLE: Regelkonformes Ergebnis
-STATEMENT: >>>
-Der Nutzer muss sich darauf verlassen können, dass vom Plugin verlegte Leiterbahnen und Vias die Design Rules der Platine einhalten.
-<<<
-RATIONALE: >>>
-Ein Routing mit DRC-Fehlern muss der Nutzer von Hand nacharbeiten.
-<<<
-
-[REQUIREMENT]
-MID: ed7db7eda77348beb9075db6134702d1
-UID: UR-010
-STATUS: Abgestimmt
-TITLE: Aktionen rückgängig machen
-STATEMENT: >>>
-Der Nutzer muss jede Aktion des Plugins im PCB-Editor rückgängig machen können.
-<<<
-RATIONALE: >>>
-Das gilt besonders für "auflösen", das auch von Hand verlegte und gesperrte Leiterbahnen löscht.
 <<<
 
 [REQUIREMENT]
